@@ -1,0 +1,17 @@
+<div class="container mt-4">
+  <h2 class="text-center mb-4">Galerie de Vidéos</h2>
+  <div class="row">
+    <div class="col-md-4 mb-4" *ngFor="let video of videos">
+      <div class="card shadow-sm">
+        <video controls class="card-img-top">
+          <source [src]="video.url" type="video/mp4">
+        </video>
+        <div class="card-body">
+          <h5 class="card-title">{{ video.title }}</h5>
+          <p class="card-text">{{ video.description }}</p>
+          <button class="btn btn-outline-primary">Voir plus</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
