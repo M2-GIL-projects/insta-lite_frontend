@@ -1,0 +1,97 @@
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4 text-center">
+            <img src="https://picsum.photos/150/150" class="rounded-circle profile-pic mb-3" alt="Photo de profil">
+        </div>
+        <div class="col-md-8">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4>Lek</h4>
+                <button [routerLink]="['/profile', '123356']" class="btn btn-primary">Modifier</button>
+            </div>
+            <div class="d-flex justify-content-between mb-3">
+                <span><strong>150</strong> publications</span>
+                <span><strong>1500</strong> abonnés</span>
+                <span><strong>500</strong> abonnements</span>
+            </div>
+            <p>Biographie de l'utilisateur. Une courte description personnelle et quelques informations sur ses intérêts.</p>
+        </div>
+    </div>
+  
+    <ul class="nav nav-tabs mt-4" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="publications-tab" data-bs-toggle="tab" data-bs-target="#publications" type="button" role="tab" aria-controls="publications" aria-selected="true">
+                <i class="bi bi-grid-3x3"></i> Publications
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="videos-tab" data-bs-toggle="tab" data-bs-target="#videos" type="button" role="tab" aria-controls="videos" aria-selected="false">
+                <i class="bi bi-play-btn"></i> Vidéos
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="reels-tab" data-bs-toggle="tab" data-bs-target="#reels" type="button" role="tab" aria-controls="reels" aria-selected="false">
+                <i class="bi bi-camera-reels"></i> Reels
+            </button>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="publications" role="tabpanel" aria-labelledby="publications-tab">
+            <div class="row mt-4">
+                <div class="col-md-4 mb-4" (click)="openModal('publication', {imageUrl: 'https://picsum.photos/300/100', username: 'Utilisateur', description: 'Description de la publication'})">
+                    <img src="https://picsum.photos/300/100" class="gallery-item" alt="Post 1">
+                </div>
+                <div class="col-md-4 mb-4" (click)="openModal('publication', {imageUrl: 'https://picsum.photos/300/100', username: 'Utilisateur', description: 'Description de la publication'})">
+                    <img src="https://picsum.photos/300/100" class="gallery-item" alt="Post 1">
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="videos" role="tabpanel" aria-labelledby="videos-tab">
+            <div class="row mt-4">
+                <div class="col-md-4 mb-4" (click)="openModal('video', {videoUrl: 'https://static.videezy.com/system/resources/previews/000/005/529/original/Reaviling_Sjusj%C3%B8en_Ski_Senter.mp4', username: 'Utilisateur', description: 'Vidéo de ski'})">
+                    <video src="https://static.videezy.com/system/resources/previews/000/005/529/original/Reaviling_Sjusj%C3%B8en_Ski_Senter.mp4" class="gallery-item" preload="metadata"></video>
+                </div>
+                <div class="col-md-4 mb-4" (click)="openModal('video', {videoUrl: 'https://static.videezy.com/system/resources/previews/000/007/536/original/rockybeach.mp4', username: 'Utilisateur', description: 'Plage rocheuse'})">
+                    <video src="https://static.videezy.com/system/resources/previews/000/007/536/original/rockybeach.mp4" class="gallery-item" preload="metadata"></video>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="reels" role="tabpanel" aria-labelledby="reels-tab">
+            <div class="row mt-4">
+                <div class="col-md-4 mb-4" (click)="openModal('reel', {reelUrl: 'https://static.videezy.com/system/resources/previews/000/044/479/original/200519_02_Confetti-Explosion.mp4', username: 'Utilisateur', description: 'Explosion de confettis'})">
+                    <video src="https://static.videezy.com/system/resources/previews/000/044/479/original/200519_02_Confetti-Explosion.mp4" class="gallery-item" preload="metadata"></video>
+                </div>
+                <div class="col-md-4 mb-4" (click)="openModal('reel', {reelUrl: 'https://static.videezy.com/system/resources/previews/000/000/128/original/Retro_TV.mp4', username: 'Utilisateur', description: 'TV rétro'})">
+                    <video src="https://static.videezy.com/system/resources/previews/000/000/128/original/Retro_TV.mp4" class="gallery-item" preload="metadata"></video>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-pane fade" id="reels" role="tabpanel" aria-labelledby="reels-tab">
+            <div class="row mt-4">
+                <div class="col-md-4 mb-4" (click)="openModal('reel', {reelUrl: 'reel1.mp4', username: 'Utilisateur', description: 'Description du reel'})">
+                    <video src="reel1.mp4" class="gallery-item"></video>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="postModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="postModalLabel">Publication</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <img src="https://via.placeholder.com/800x400" alt="Post Image" class="w-100 mb-3">
+                <h6>Nom d'utilisateur</h6>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse posuere interdum nunc.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">J'aime</button>
+                <button type="button" class="btn btn-secondary">Commenter</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,17 @@
+<div class="modal-header">
+    <h5 class="modal-title">{{ type | titlecase }}</h5>
+    <button type="button" class="btn-close" (click)="activeModal.dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    <ng-container [ngSwitch]="type">
+      <img *ngSwitchCase="'publication'" [src]="item.imageUrl" alt="Post Image" class="w-100 mb-3">
+      <video *ngSwitchCase="'video'" [src]="item.videoUrl" controls class="w-100 mb-3"></video>
+      <video *ngSwitchCase="'reel'" [src]="item.reelUrl" controls class="w-100 mb-3"></video>
+    </ng-container>
+    <h6>{{ item.username }}</h6>
+    <p>{{ item.description }}</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary">J'aime</button>
+    <button type="button" class="btn btn-secondary">Commenter</button>
+  </div>
