@@ -1,43 +1,67 @@
 <div class="auth-container">
   <div class="auth-card">
     <img src="assets/images/logo-instagram.png" alt="Instagram Logo" class="logo" />
-    <h2 class="form-title">Inscription</h2>
+    <h1 class="app-title">Inscription</h1>
     <form (ngSubmit)="onRegister()">
       <!-- Nom complet -->
-      <div class="form-group">
+      <div
+        class="form-group"
+        [class.invalid]="errors.fullName"
+        [class.valid]="!errors.fullName && fullName.length > 0"
+      >
         <input
           type="text"
-          [(ngModel)]="fullName"
           name="fullName"
+          [(ngModel)]="fullName"
+          (blur)="validateField('fullName')"
           placeholder="Nom complet"
           class="form-control"
-          required
         />
+        <div *ngIf="errors.fullName" class="error-message">
+          <small>{{ errors.fullName }}</small>
+        </div>
       </div>
+
       <!-- Email -->
-      <div class="form-group">
+      <div
+        class="form-group"
+        [class.invalid]="errors.email"
+        [class.valid]="!errors.email && email.length > 0"
+      >
         <input
           type="email"
-          [(ngModel)]="email"
           name="email"
+          [(ngModel)]="email"
+          (blur)="validateField('email')"
           placeholder="Email"
           class="form-control"
-          required
         />
+        <div *ngIf="errors.email" class="error-message">
+          <small>{{ errors.email }}</small>
+        </div>
       </div>
+
       <!-- Mot de passe -->
-      <div class="form-group">
+      <div
+        class="form-group"
+        [class.invalid]="errors.password"
+        [class.valid]="!errors.password && password.length > 0"
+      >
         <input
           type="password"
-          [(ngModel)]="password"
           name="password"
+          [(ngModel)]="password"
+          (blur)="validateField('password')"
           placeholder="Mot de passe"
           class="form-control"
-          required
         />
+        <div *ngIf="errors.password" class="error-message">
+          <small>{{ errors.password }}</small>
+        </div>
       </div>
-      <!-- Bouton -->
-      <button type="submit" class="btn btn-primary">S'inscrire</button>
+
+      <button type="submit" class="btn-submit" [disabled]="!isFormValid()">S'inscrire</button>
     </form>
+    <p>Vous avez déjà un compte ? <a routerLink="/login">Se connecter</a></p>
   </div>
 </div>
