@@ -1,0 +1,42 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <img src="assets/images/logo-instagram.png" alt="Logo" class="logo" />
+    <h1 class="app-title">Connexion</h1>
+    <form #loginForm="ngForm" (ngSubmit)="onLogin(loginForm)">
+      <!-- Champ Email -->
+      <div class="form-group">
+        <input
+          type="email"
+          [(ngModel)]="email"
+          name="email"
+          placeholder="Email"
+          class="form-control"
+          required
+        />
+        <div *ngIf="loginForm.submitted && loginForm.controls['email']?.invalid" class="error-message">
+          <small *ngIf="loginForm.controls['email']?.errors?.['required']">L'adresse email est obligatoire.</small>
+          <small *ngIf="loginForm.controls['email']?.errors?.['email']">L'adresse email n'est pas valide.</small>
+        </div>
+      </div>
+
+      <!-- Champ Mot de Passe -->
+      <div class="form-group">
+        <input
+          type="password"
+          [(ngModel)]="password"
+          name="password"
+          placeholder="Mot de passe"
+          class="form-control"
+          required
+        />
+        <div *ngIf="loginForm.submitted && loginForm.controls['password']?.invalid" class="error-message">
+          <small *ngIf="loginForm.controls['password']?.errors?.['required']">Le mot de passe est obligatoire.</small>
+        </div>
+      </div>
+
+      <!-- Bouton de Connexion -->
+      <button type="submit" class="btn-submit">Se connecter</button>
+    </form>
+    <p>Pas encore inscrit ? <a routerLink="/register">Créer un compte</a></p>
+  </div>
+</div>

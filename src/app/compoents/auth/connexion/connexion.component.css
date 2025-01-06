@@ -1,0 +1,91 @@
+/* Conteneur principal */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f3f4f6; /* Couleur d'arrière-plan douce */
+}
+
+/* Carte du formulaire */
+.auth-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px 30px;
+  text-align: center;
+  width: 350px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo */
+.logo {
+  width: 80px; /* Taille du logo */
+  height: auto;
+  margin-bottom: 10px;
+}
+
+/* Titre */
+.app-title {
+  font-family: 'Poppins', sans-serif; /* Police moderne */
+  font-size: 24px;
+  font-weight: 600;
+  color: #333; /* Couleur élégante */
+  margin-bottom: 20px;
+}
+
+/* Groupe de champs */
+.form-group {
+  margin-bottom: 15px;
+}
+
+/* Champs de formulaire */
+.form-control {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  font-family: 'Arial', sans-serif;
+  transition: border-color 0.2s ease-in-out;
+}
+
+.form-control:focus {
+  border-color: #0095f6; /* Couleur au focus */
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 149, 246, 0.2);
+}
+
+/* Bouton de connexion */
+.btn-submit {
+  width: 100%;
+  padding: 10px;
+  background-color: #0095f6; /* Couleur principale */
+  border: none;
+  color: white;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  margin-top: 10px;
+}
+
+.btn-submit:hover {
+  background-color: #007dc1; /* Couleur au survol */
+}
+
+/* Lien sous le formulaire */
+.auth-card p {
+  font-size: 14px;
+  color: #666;
+  margin-top: 15px;
+}
+
+.auth-card a {
+  color: #0095f6;
+  text-decoration: none;
+}
+
+.auth-card a:hover {
+  text-decoration: underline;
+}

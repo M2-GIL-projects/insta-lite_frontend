@@ -7,6 +7,8 @@ import { VideoPlayerComponent } from './compoents/video-player/video-player.comp
 import { ProfilEditComponent } from './compoents/profile/profil-edit/profil-edit.component';
 import { ProfilInfoComponent } from './compoents/profile/profil-info/profil-info.component';
 import { ProfilModalComponent } from './compoents/profile/profil-modal/profil-modal.component';
+import { ConnexionComponent } from './compoents/auth/connexion/connexion.component';
+import { RegisterComponent } from './compoents/auth/register/register.component';
 
 export const routes: Routes = [
 { path: '', component: HomeComponent },
@@ -16,7 +18,10 @@ export const routes: Routes = [
   { path: 'profile', component: ProfilInfoComponent},
   { path: 'profile/:userId', component: ProfilEditComponent},
   { path: 'profile/contenu/:Id', component: ProfilModalComponent},
-  { path: 'admin', component: AdminDashboardComponent}
+  { path: 'admin', component: AdminDashboardComponent},
   //{ path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
   //{ path: 'admin', component: AdminDashboardComponent, canActivate: [AdminGuard] }
+  { path: 'connexion', component: ConnexionComponent },
+  { path: 'register', component: RegisterComponent }
+
 ];
