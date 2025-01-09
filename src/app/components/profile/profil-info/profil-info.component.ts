@@ -17,12 +17,8 @@ export class ProfilInfoComponent implements OnInit{
      route = inject(Router);
     
      ngOnInit() {
-      this.userService.getUserById(2).subscribe(
+      this.userService.getMe().subscribe(
         (userData) => {
-          if (userData.joinDate) {
-            const [day, month, year] = userData.joinDate.split('/').map(Number);
-            userData.joinDate = new Date(year, month - 1, day); 
-          }
           this.user = userData;
         },
         (error) => {

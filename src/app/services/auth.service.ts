@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
@@ -5,24 +6,22 @@ import { Observable, of } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-//ceci est un mock pour tester le frontend
-constructor() { }
+  
+  private UserUrl = 'http://localhost:8080/auth';
 
-  private users = [
-    { id: 1, email: 'admin@example.com', password: 'admin123', role: 'admin' },
-    { id: 2, email: 'user@example.com', password: 'user123', role: 'user' }
-  ];
+constructor(private http: HttpClient) { }
 
-  login(email: string, password: string): Observable<any> {
-    const user = this.users.find(u => u.email === email && u.password === password);
-    return of(user ? { success: true, user } : { success: false, message: 'Invalid credentials' });
-  }
+login(email: string, password: string): Observable<any> {
+  return this.http.post(`${this.UserUrl}/login`, { email, password });
+}
 
-  isLoggedIn(): boolean {
-    return localStorage.getItem('currentUser') !== null;
-  }
+logout(): Observable<any> {
+  return this.http.post(`${this.UserUrl}/logout`, {});
+}
 
-  getCurrentUser(): any {
-    return JSON.parse(localStorage.getItem('currentUser') || '{}');
-  }
+isLoggedIn(): Observable<boolean> {
+  return of(!!localStorage.getItem('token'));
+}
+
+ 
 }

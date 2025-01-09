@@ -1,9 +1,11 @@
 export interface User {
-    id: number;
-    name: string;
+    id?: string;
+    pseudo: string;
     email: string;
-    role: string;
-    avatarUrl: string;
-    bio: string,
-    joinDate:Date
+    role?: string;
+    password?: string; 
+    profileImg?: string;
+    bio?: string,
+    phone?:string,
+    joinDate?:Date
 }
