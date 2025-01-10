@@ -1,9 +1,14 @@
-<div class="container mt-4">
-    <h2 class="mb-4">Modifier le profil</h2>
-    <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+<div class="container mt-4 mb-5">
+  <div class="card">
+    <div class="card-header"><h3 class="mb-4">Modifier le profil</h3></div>
+    <div class="card-body">
+      <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
       <div class="mb-3">
         <label for="profilePic" class="form-label">Photo de profil</label>
-        <input type="file" class="form-control" id="profilePic" formControlName="profilePic">
+        <input type="file" class="form-control" id="profilePic" (change)="onFileSelected($event)" accept="image/*">
+        <div class="mt-2">
+          <img [src]="selectedImageUrl || currentProfileImageUrl || 'assets/default-profile.png'" alt="Photo de profil" class="img-thumbnail" style="max-width: 200px;">
+        </div>
       </div>
       <div class="mb-3">
         <label for="pseudo" class="form-label">Nom d'utilisateur</label>
@@ -59,5 +64,10 @@
       </div>
       <button type="submit" class="btn btn-primary" [disabled]="!userForm.valid">Enregistrer les modifications</button>
     </form>
+
+    </div>
+  </div>
+    
+    
   </div>
   

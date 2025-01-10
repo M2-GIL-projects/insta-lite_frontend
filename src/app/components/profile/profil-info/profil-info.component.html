@@ -1,26 +1,33 @@
 <div class="container mt-4">
-    <div class="row">
+    <div class="row align-items-center">
+        <!-- Profile Image Section -->
         <div class="col-md-4 text-center">
-            <img [src]="user?.profileImg || 'assets/defaut.jpg'" class="rounded-circle profile-pic mb-3" alt="Photo de profil">
+            <img [src]="currentUser?.profileImg || 'assets/defaut.jpg'" class="rounded-circle profile-pic mb-3 img-fluid" alt="Photo de profil de {{currentUser?.pseudo}}">
         </div>
+
+        <!-- User Info Section -->
         <div class="col-md-8">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4>{{user?.pseudo}}</h4>
-                <button [routerLink]="['/profile', user?.id]" class="btn btn-primary">Modifier</button>
+                <h4 class="mb-0">{{currentUser?.pseudo}}</h4>
+                <div>
+                    <button [routerLink]="['/profile', currentUser?.id]" class="btn btn-primary me-2">Modifier</button>
+                    <button [routerLink]="['/addPost']" class="btn btn-warning">Créer un post</button>
+                </div>
             </div>
-            <div class="d-flex justify-content-between mb-3">
-                <span><strong>150</strong> publications</span>
-                <span><strong>1500</strong> abonnés</span>
-                <span><strong>500</strong> abonnements</span>
+            <div class="d-flex justify-content-between text-center mb-3">
+                <span><strong>{{posts.length}}</strong> <br> publications</span>
+                <span><strong>0</strong> <br> abonnés</span>
+                <span><strong>0</strong> <br> abonnements</span>
             </div>
-            <p>{{user?.bio}}</p>
-        </div>
+            <p class="text-muted">{{currentUser?.bio || "Aucune bio disponible"}}</p>
+        </div>        
     </div>
-  
+
+    <!-- Tab Navigation -->
     <ul class="nav nav-tabs mt-4" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="publications-tab" data-bs-toggle="tab" data-bs-target="#publications" type="button" role="tab" aria-controls="publications" aria-selected="true">
-                <i class="bi bi-grid-3x3"></i> Publications
+                <i class="bi bi-grid-3x3"></i> Tous
             </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -29,69 +36,45 @@
             </button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="reels-tab" data-bs-toggle="tab" data-bs-target="#reels" type="button" role="tab" aria-controls="reels" aria-selected="false">
-                <i class="bi bi-camera-reels"></i> Reels
+            <button class="nav-link" id="photos-tab" data-bs-toggle="tab" data-bs-target="#photos" type="button" role="tab" aria-controls="photos" aria-selected="false">
+                <i class="bi bi-camera"></i> Photos
             </button>
         </li>
     </ul>
+
+    <!-- Tab Content -->
     <div class="tab-content" id="myTabContent">
+        <!-- All Posts -->
         <div class="tab-pane fade show active" id="publications" role="tabpanel" aria-labelledby="publications-tab">
             <div class="row mt-4">
-                <div class="col-md-4 mb-4" (click)="openModal('publication', {imageUrl: 'https://picsum.photos/300/100', username: 'Utilisateur', description: 'Description de la publication'})">
-                    <img src="https://picsum.photos/300/100" class="gallery-item" alt="Post 1">
-                </div>
-                <div class="col-md-4 mb-4" (click)="openModal('publication', {imageUrl: 'https://picsum.photos/300/100', username: 'Utilisateur', description: 'Description de la publication'})">
-                    <img src="https://picsum.photos/300/100" class="gallery-item" alt="Post 1">
+                <div *ngFor="let post of posts" class="col-sm-6 col-md-4 mb-4" (click)="openModal('publication', post)">
+                    <img *ngIf="post.pictures && post.pictures.length > 0" [src]="post.pictures[0].url || 'assets/default-image.jpg'" class="gallery-item img-fluid rounded" alt="Image de la publication">
+                    <video *ngIf="post.videos && post.videos.length > 0" [src]="post.videos[0].url || 'assets/default-video.mp4'" class="gallery-item img-fluid rounded" preload="metadata"></video>
+                    <div *ngIf="!post.pictures?.length && !post.videos?.length" class="gallery-item text-center">
+                        <p>{{ post.content || 'Aucun contenu disponible' }}</p>
+                    </div>
                 </div>
             </div>
-        </div>
+        </div>        
+
+        <!-- Videos Only -->
         <div class="tab-pane fade" id="videos" role="tabpanel" aria-labelledby="videos-tab">
             <div class="row mt-4">
-                <div class="col-md-4 mb-4" (click)="openModal('video', {videoUrl: 'https://static.videezy.com/system/resources/previews/000/005/529/original/Reaviling_Sjusj%C3%B8en_Ski_Senter.mp4', username: 'Utilisateur', description: 'Vidéo de ski'})">
-                    <video src="https://static.videezy.com/system/resources/previews/000/005/529/original/Reaviling_Sjusj%C3%B8en_Ski_Senter.mp4" class="gallery-item" preload="metadata"></video>
-                </div>
-                <div class="col-md-4 mb-4" (click)="openModal('video', {videoUrl: 'https://static.videezy.com/system/resources/previews/000/007/536/original/rockybeach.mp4', username: 'Utilisateur', description: 'Plage rocheuse'})">
-                    <video src="https://static.videezy.com/system/resources/previews/000/007/536/original/rockybeach.mp4" class="gallery-item" preload="metadata"></video>
-                </div>
-            </div>
-        </div>
-        <div class="tab-pane fade" id="reels" role="tabpanel" aria-labelledby="reels-tab">
-            <div class="row mt-4">
-                <div class="col-md-4 mb-4" (click)="openModal('reel', {reelUrl: 'https://static.videezy.com/system/resources/previews/000/044/479/original/200519_02_Confetti-Explosion.mp4', username: 'Utilisateur', description: 'Explosion de confettis'})">
-                    <video src="https://static.videezy.com/system/resources/previews/000/044/479/original/200519_02_Confetti-Explosion.mp4" class="gallery-item" preload="metadata"></video>
-                </div>
-                <div class="col-md-4 mb-4" (click)="openModal('reel', {reelUrl: 'https://static.videezy.com/system/resources/previews/000/000/128/original/Retro_TV.mp4', username: 'Utilisateur', description: 'TV rétro'})">
-                    <video src="https://static.videezy.com/system/resources/previews/000/000/128/original/Retro_TV.mp4" class="gallery-item" preload="metadata"></video>
+                <div *ngFor="let post of posts" class="col-sm-6 col-md-4 mb-4" (click)="openModal('publication', post)">
+                    <video *ngIf="post.videos && post.videos.length > 0" [src]="post.videos[0].url || 'https://static.videezy.com/system/resources/previews/000/005/529/original/Reaviling_Sjusj%C3%B8en_Ski_Senter.mp4'" class="gallery-item img-fluid rounded" preload="metadata"></video>
                 </div>
             </div>
         </div>
         
-        <div class="tab-pane fade" id="reels" role="tabpanel" aria-labelledby="reels-tab">
+
+        <!-- Photos Only -->
+        <div class="tab-pane fade" id="photos" role="tabpanel" aria-labelledby="photos-tab">
             <div class="row mt-4">
-                <div class="col-md-4 mb-4" (click)="openModal('reel', {reelUrl: 'reel1.mp4', username: 'Utilisateur', description: 'Description du reel'})">
-                    <video src="reel1.mp4" class="gallery-item"></video>
+                <div *ngFor="let post of posts" class="col-sm-6 col-md-4 mb-4" (click)="openModal('publication', post)">
+                    <img *ngIf="post.pictures && post.pictures.length > 0" [src]="post.pictures[0].url || 'assets/default-image.jpg'" class="gallery-item img-fluid rounded" alt="Image de la publication">
                 </div>
             </div>
         </div>
-    </div>
-  </div>
-
-  <div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="postModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="postModalLabel">Publication</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <img src="https://via.placeholder.com/800x400" alt="Post Image" class="w-100 mb-3">
-                <h6>Nom d'utilisateur</h6>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse posuere interdum nunc.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary">J'aime</button>
-                <button type="button" class="btn btn-secondary">Commenter</button>
-            </div>
-        </div>
+        
     </div>
 </div>

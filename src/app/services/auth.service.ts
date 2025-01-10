@@ -16,8 +16,9 @@ login(email: string, password: string): Observable<any> {
 }
 
 logout(): Observable<any> {
-  return this.http.post(`${this.UserUrl}/logout`, {});
+  return this.http.post(`${this.UserUrl}/logout`, {}, { responseType: 'text' });
 }
+
 
 isLoggedIn(): Observable<boolean> {
   return of(!!localStorage.getItem('token'));

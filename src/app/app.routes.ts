@@ -9,6 +9,7 @@ import { ProfilInfoComponent } from './components/profile/profil-info/profil-inf
 import { ProfilModalComponent } from './components/profile/profil-modal/profil-modal.component';
 import { RegisterComponent } from './components/register/register.component';
 import { AuthGuard } from './components/auth.guard';
+import { CreatePostComponent } from './components/create-post/create-post.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -17,9 +18,11 @@ export const routes: Routes = [
   { path: 'videos', component: VideoPlayerComponent },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: RegisterComponent },
-  { path: 'profile', component: ProfilInfoComponent , canActivate: [AuthGuard]},
-  { path: 'profile/:userId', component: ProfilEditComponent},
-  { path: 'profile/contenu/:Id', component: ProfilModalComponent},
-  { path: 'admin', component: AdminDashboardComponent},
-  //{ path: 'admin', component: AdminDashboardComponent, canActivate: [AdminGuard] }
+  { path: 'addPost', component: CreatePostComponent, canActivate: [AuthGuard] },
+  { path: 'profile', component: ProfilInfoComponent, canActivate: [AuthGuard] },
+  { path: 'profile/:userId', component: ProfilEditComponent, canActivate: [AuthGuard] },
+  { path: 'profile/contenu/:Id', component: ProfilModalComponent, canActivate: [AuthGuard] },
+  { path: 'admin', component: AdminDashboardComponent, canActivate: [AuthGuard] },
+  // Ajoutez un AdminGuard spécifique pour la route admin si nécessaire
 ];
+

@@ -17,6 +17,8 @@ export class ProfilEditComponent implements OnInit {
   userId: string | null = null;
   userForm: FormGroup;
   isChangePassword: boolean = false;
+  currentProfileImageUrl: string | null = null;
+  selectedImageUrl: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -59,14 +61,26 @@ export class ProfilEditComponent implements OnInit {
           email: user.email,
           bio: user.bio,
           phone: user.phone,
-          profilePic: user.profileImg
         });
+        this.currentProfileImageUrl = user.profileImg || null;
       },
       (error) => {
         console.error('Erreur lors du chargement des données utilisateur:', error);
       }
     );
   }
+
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.selectedImageUrl = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+  
 
   onSubmit() {
     if (this.userForm.valid) {

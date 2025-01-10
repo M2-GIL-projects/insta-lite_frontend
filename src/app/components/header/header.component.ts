@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
 import { User } from '../../models/User';
@@ -7,9 +7,10 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-header',
+  standalone: true,
   imports: [RouterLink, CommonModule],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.css'
+  styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
   currentUser: User | null = null;
@@ -17,11 +18,11 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router : Router
   ) {}
 
   ngOnInit(): void {
-    this.loadUser();
     this.authService.isLoggedIn().subscribe(loggedIn => {
       this.isLoggedIn = loggedIn;
       if (loggedIn) {
@@ -38,21 +39,28 @@ export class HeaderComponent implements OnInit {
         this.currentUser = user;
       },
       error => {
-        console.error('Erreur lors du chargement de l\'utilisateur', error);
+        console.log('Erreur lors du chargement de l\'utilisateur', error);
+        this.isLoggedIn = false;
+        this.currentUser = null;
+      }
+    );
+  }
+
+  logout() {
+    this.authService.logout().subscribe(
+      (response) => {
+        console.log('Déconnexion réussie:', response);
+        this.currentUser = null;
+        this.isLoggedIn = false;
+        localStorage.removeItem('token'); // Assurez-vous de supprimer le token
+        this.router.navigate(['/home']);
+      },
+      (error) => {
+        console.error('Erreur lors de la déconnexion', error);
       }
     );
   }
   
 
-  logout() {
-    this.authService.logout().subscribe(
-      () => {
-        this.currentUser = null;
-        this.isLoggedIn = false;
-      },
-      error => {
-        console.error('Erreur lors de la déconnexion', error);
-      }
-    );
-  }
+
 }

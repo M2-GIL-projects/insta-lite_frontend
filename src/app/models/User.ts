@@ -1,5 +1,5 @@
 export interface User {
-    id?: string;
+    id?: number;
     pseudo: string;
     email: string;
     role?: string;
@@ -7,5 +7,5 @@ export interface User {
     profileImg?: string;
     bio?: string,
     phone?:string,
-    joinDate?:Date
+    createdAt?: Date
 }

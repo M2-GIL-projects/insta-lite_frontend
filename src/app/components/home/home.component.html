@@ -1,41 +1,77 @@
 <div class="container mt-4">
-  <div class="row">
+    <div class="row">
+      <!-- Section principale des posts -->
       <div class="col-md-8">
-          <div class="card mb-4">
-              <div class="card-header">
-                  <img src="https://picsum.photos/400/200" class="rounded-circle" width="32" height="32" alt="Avatar">
-                  <span class="ms-2">utilisateur123</span>
-              </div>
-              <img src="https://picsum.photos/800/400" class="post-image" alt="Post">
-              <div class="card-body">
-                  <button class="btn btn-sm btn-outline-secondary me-2">❤️ J'aime</button>
-                  <button class="btn btn-sm btn-outline-secondary">💬 Commenter</button>
-                  <p class="mt-2">Description du post...</p>
-              </div>
+        <div *ngFor="let post of posts" class="card mb-4">
+          <!-- En-tête du post -->
+          <div class="card-header d-flex align-items-center">
+            <img
+              [src]="post.user.profileImg"
+              class="rounded-circle"
+              width="32"
+              height="32"
+              alt="Avatar"
+            />
+            <span class="ms-2">{{ post.user.pseudo }}</span>
           </div>
-          <!-- Répétez ce bloc pour plus de posts -->
+  
+          <!-- Image du post si disponible -->
+          <img *ngIf="post.pictures && post.pictures.length > 0" [src]="post.pictures[0].url"   class="post-image img-fluid" alt="Post">
+
+          <!-- Corps du post -->
+          <div class="card-body">
+            <p>{{ post.content }}</p>
+            <div class="d-flex mb-3">
+              <button
+                (click)="likePost(post.id)"
+                class="btn btn-sm btn-outline-secondary me-2"
+              >
+               {{post.likes?.length}} ❤️ J'aime 
+              </button>
+              <button
+                (click)="openCommentModal(post.id)"
+                class="btn btn-sm btn-outline-secondary"
+              >
+              {{post.comments?.length}} 💬 Commenter
+              </button>
+            </div>
+  
+            <!-- Liste des commentaires -->
+            <div *ngFor="let comment of post.comments || []" class="comment">
+              <p>
+                <strong>{{ comment.content }}</strong>
+                <small class="text-muted">- {{ comment.createdAt | date: 'short' }}</small>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Section des suggestions -->
+      <div class="col-lg-4">
+        <div class="p-3 bg-white rounded shadow-sm">
+          <h5>Suggestions</h5>
+
+          <div
+            *ngFor="let suggestion of suggestions"
+            class="d-flex align-items-center mb-3"
+          >
+            <img
+              [src]="suggestion.profileImg || 'https://picsum.photos/50/50'"
+              alt="Suggestion"
+              class="rounded-circle me-3"
+              width="50"
+              height="50"
+            />
+            <div>
+              <h6 class="mb-0">{{ suggestion.pseudo }}</h6>
+            </div>
+            <button class="btn btn-link ms-auto">Suivre</button>
+          </div>
+
+        </div>
       </div>
       
-      <div class="col-lg-4">
-          <div class="p-3 bg-white rounded shadow-sm">
-              <h5>Suggestions</h5>
-              <div class="d-flex align-items-center mb-3">
-                  <img src="https://picsum.photos/50/50" alt="" class="rounded-circle me-3">
-                  <div>
-                      <h6 class="mb-0">Utilisateur 1</h6>
-                      <small class="text-muted">Abonné</small>
-                  </div>
-                  <button class="btn btn-link ms-auto">Suivre</button>
-              </div>
-              <div class="d-flex align-items-center mb-3">
-                  <img src="https://picsum.photos/50/50" alt="" class="rounded-circle me-3">
-                  <div>
-                      <h6 class="mb-0">Utilisateur 2</h6>
-                      <small class="text-muted">Abonné</small>
-                  </div>
-                  <button class="btn btn-link ms-auto">Suivre</button>
-              </div>
-          </div>
-      </div>
+    </div>
   </div>
-</div>
+  

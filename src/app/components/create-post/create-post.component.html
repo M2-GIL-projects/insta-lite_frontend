@@ -1,0 +1,79 @@
+<div class="container mt-4">
+    <div class="card">
+      <div class="card-header">
+        <h2>Créer un nouveau post</h2>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
+          <div class="mb-3">
+            <label for="content" class="form-label">Contenu</label>
+            <textarea class="form-control" id="content" rows="3" formControlName="content"></textarea>
+            <div *ngIf="postForm.get('content')?.invalid && postForm.get('content')?.touched" class="text-danger">
+              <small *ngIf="postForm.get('content')?.errors?.['required']">Le contenu est requis.</small>
+              <small *ngIf="postForm.get('content')?.errors?.['maxlength']">Le contenu ne doit pas dépasser 500 caractères.</small>
+            </div>
+          </div>
+          <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="isPrivate" formControlName="isPrivate">
+            <label class="form-check-label" for="isPrivate">Rendre privé</label>
+          </div>
+          <button type="submit" class="btn btn-primary" [disabled]="!postForm.valid">Créer le post</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <ng-template #mediaModal let-modal>
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Ajouter des médias au post</h4>
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        (click)="modal.dismiss('Cross click')"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  
+    <!-- Modal Body -->
+    <div class="modal-body">
+      <!-- File upload input -->
+      <div class="mb-3">
+        <label for="files" class="form-label">Images ou Vidéos</label>
+        <input
+          type="file"
+          class="form-control"
+          id="files"
+          (change)="onFilesSelected($event)"
+          accept="image/*,video/*"
+          multiple
+        />
+      </div>
+  
+      <!-- File preview section -->
+      <div class="mb-3" *ngIf="previewUrls.length > 0">
+        <h5>Aperçu des fichiers sélectionnés :</h5>
+        <div class="row">
+          <div class="col-md-3 mb-2" *ngFor="let url of previewUrls; let i = index">
+            <img *ngIf="selectedFiles[i].type.startsWith('image/')" [src]="url" class="img-thumbnail" alt="Aperçu image" />
+            <img *ngIf="selectedFiles[i].type.startsWith('video/')" [src]="url" class="img-thumbnail" alt="Aperçu vidéo" />
+          </div>
+        </div>
+      </div>      
+    </div>
+  
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+      <button
+        type="button"
+        class="btn btn-outline-dark"
+        (click)="addMediaToPost()"
+      >
+        Ajouter les médias
+      </button>
+    </div>
+  </ng-template>
+  
+  
