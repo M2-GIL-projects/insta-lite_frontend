@@ -9,9 +9,10 @@ import { User } from '../models/User';
 })
 export class PostService {
   private apiUrl = 'http://localhost:8080/posts';
-  private apiPublicUrl = 'http://localhost:8080/public';
-  private addMediaUrl = 'http://localhost:8080/posts/videos/';
+  private apiPublicUrl = 'http://localhost:8080/portfolio/public';
+  private addMediaUrl = 'http://localhost:8080/posts/';
   private userPostUrl = 'http://localhost:8080/posts/user';
+  private commentUrl="http://localhost:8080/comments";
 
   constructor(private http: HttpClient) {}
 
@@ -26,6 +27,8 @@ export class PostService {
   getPublicPosts(): Observable<Post[]> {
     return this.http.get<Post[]>(this.apiPublicUrl);
   }
+
+  
 
   getPublicPostsUsers(): Observable<User[]> {
     return this.getPublicPosts().pipe(
@@ -56,18 +59,20 @@ export class PostService {
     return this.http.post<Post>(this.apiUrl, postData);
   }
 
-  addVideoToPost(id: number, postData: FormData): Observable<any> {
-    return this.http.post<any>(`${this.addMediaUrl}upload/${id}`, postData);
+  addVideoToPost(id: number, isPrivate: boolean, postData: FormData): Observable<any> {
+    return this.http.post<any>(`${this.addMediaUrl}videos/upload/${id}?isPrivate=${isPrivate}`, postData);
   }
-
-  addPictureToPost(id: number, postData: FormData): Observable<any> {
-    return this.http.post<any>(`${this.addMediaUrl}upload/${id}`, postData);
+  
+  addPictureToPost(id: number, isPrivate: boolean, postData: FormData): Observable<any> {
+    return this.http.post<any>(`${this.addMediaUrl}pictures/upload/${id}?isPrivate=${isPrivate}`, postData);
   }
+  
 
   updatePost(id: number, postData: FormData): Observable<Post> {
     return this.http.put<Post>(`${this.apiUrl}/${id}`, postData);
   }
 
+  
   deletePost(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
@@ -77,12 +82,11 @@ export class PostService {
   }
 
   addComment(postId: number, comment: { content: string }): Observable<Comment> {
-    const commentUrl="http://localhost:8080/comments/add";
-    return this.http.post<Comment>(`${commentUrl}/${postId}`, comment);
+    return this.http.post<Comment>(`${this.commentUrl}/add/${postId}`, comment);
   }
 
-  deleteComment(postId: number, commentId: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${postId}/comments/${commentId}`);
+  deleteComment(commentId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${commentId}`);
   }
 
   likePost(postId: number): Observable<Like> {

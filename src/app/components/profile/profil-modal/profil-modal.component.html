@@ -1,17 +1,76 @@
-<div class="modal-header">
-    <h5 class="modal-title">{{ type | titlecase }}</h5>
-    <button type="button" class="btn-close" (click)="activeModal.dismiss()"></button>
+
+<div class="modal-dialog modal-lg">
+  <div class="modal-content">
+    <div class="modal-body p-0">
+      <div class="row g-0">
+        <!-- Section média (image/vidéo) -->
+        <div class="col-md-7 bg-dark d-flex align-items-center justify-content-center">
+          <img *ngIf="item.pictures && item.pictures.length > 0"
+               [src]="getImageUrl(item.pictures[0].url)"
+               class="img-fluid w-100"
+               alt="{{ item.content }}"
+               style="max-height: 500px; object-fit: cover;">
+          <video *ngIf="item.videos && item.videos.length > 0"
+                 [src]="getImageUrl(item.videos[0].url)"
+                 class="img-fluid w-100"
+                 preload="metadata"
+                 controls
+                 style="max-height: 500px; object-fit: cover;"></video>
+        </div>
+
+        <!-- Section détails -->
+        <div class="col-md-5">
+          <div class="d-flex flex-column h-100">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center border-bottom p-3">
+              <div class="d-flex align-items-center">
+                <img [src]="currentUser?.profileImg || 'assets/defaut.jpg'"
+                     class="rounded-circle me-2"
+                     style="width: 40px; height: 40px; object-fit: cover;"
+                     alt="Photo de profil">
+                <span class="fw-bold">{{ currentUser?.pseudo }}</span>
+              </div>
+              <button type="button" class="btn-close" (click)="activeModal.dismiss()" aria-label="Close"></button>
+            </div>
+
+            <!-- Contenu principal -->
+            <div class="flex-grow-1 p-3 overflow-auto">
+              <p class="mb-0"><strong>{{ currentUser?.pseudo }}</strong> {{ item.content }}</p>
+              <div class="text-muted small mt-2">{{ item.createdAt | date:'longDate' }}</div>
+            </div>
+
+            <!-- Footer avec actions -->
+            <div class="border-top p-3">
+              <div class="d-flex flex-wrap gap-2 justify-content-start mb-3">
+                <button class="btn btn-outline-danger btn-sm d-flex align-items-center">
+                  <i class="fas fa-heart me-3"></i>{{ item.likes?.length }} 
+                </button>
+                <button class="btn btn-outline-primary btn-sm d-flex align-items-center">
+                  <i class="fas fa-comment me-3"></i> {{ item.comments?.length }}
+                </button>
+              </div>
+
+              <!-- Section des commentaires -->
+              <h6 class="fw-bold">Commentaires</h6>
+              <div *ngFor="let comment of item.comments" class="mb-3 border rounded p-2">
+                <div class="d-flex justify-content-between">
+                  <span>
+                    <strong>{{ item.user?.pseudo }}</strong>: {{ comment.content }}
+                  </span>
+                  <button *ngIf="item.user.pseudo == currentUser?.pseudo" class="btn btn-sm btn-outline-danger" (click)="deleteComment(comment.id)">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+              <!-- Champ pour ajouter un commentaire -->
+              <div *ngIf="currentUser" class="d-flex align-items-center mt-2">
+                <input type="text" [(ngModel)]="commentContent" class="form-control me-2" placeholder="Ajoutez un commentaire...">
+                <button class="btn btn-primary btn-sm" (click)="addComment(item.id)">Publier</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="modal-body">
-    <ng-container [ngSwitch]="type">
-      <img *ngSwitchCase="'publication'" [src]="item.imageUrl" alt="Post Image" class="w-100 mb-3">
-      <video *ngSwitchCase="'video'" [src]="item.videoUrl" controls class="w-100 mb-3"></video>
-      <video *ngSwitchCase="'reel'" [src]="item.reelUrl" controls class="w-100 mb-3"></video>
-    </ng-container>
-    <h6>{{ item.username }}</h6>
-    <p>{{ item.description }}</p>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-primary">J'aime</button>
-    <button type="button" class="btn btn-secondary">Commenter</button>
-  </div>
+</div>

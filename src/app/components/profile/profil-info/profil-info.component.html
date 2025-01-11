@@ -1,80 +1,126 @@
 <div class="container mt-4">
     <div class="row align-items-center">
-        <!-- Profile Image Section -->
-        <div class="col-md-4 text-center">
-            <img [src]="currentUser?.profileImg || 'assets/defaut.jpg'" class="rounded-circle profile-pic mb-3 img-fluid" alt="Photo de profil de {{currentUser?.pseudo}}">
+      <!-- Section image de profil -->
+      <div class="col-md-4 text-center">
+        <img 
+          [src]="currentUser?.profileImg || 'assets/defaut.jpg'" 
+          class="rounded-circle profile-pic mb-3 img-fluid shadow"
+          alt="Photo de profil de {{currentUser?.pseudo}}" 
+          style="width: 150px; height: 150px; object-fit: cover;">
+      </div>
+  
+      <!-- Section informations utilisateur -->
+      <div class="col-md-8">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="mb-0 fw-bold">{{currentUser?.pseudo}}</h4>
+          <div>
+            <button [routerLink]="['/profile', currentUser?.id]" class="btn btn-primary me-2">
+              <i class="fas fa-user-edit"></i> Modifier
+            </button>
+            <button [routerLink]="['/addPost']" class="btn btn-warning">
+              <i class="fas fa-plus-circle"></i> Créer un post
+            </button>
+          </div>
         </div>
-
-        <!-- User Info Section -->
-        <div class="col-md-8">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="mb-0">{{currentUser?.pseudo}}</h4>
-                <div>
-                    <button [routerLink]="['/profile', currentUser?.id]" class="btn btn-primary me-2">Modifier</button>
-                    <button [routerLink]="['/addPost']" class="btn btn-warning">Créer un post</button>
-                </div>
-            </div>
-            <div class="d-flex justify-content-between text-center mb-3">
-                <span><strong>{{posts.length}}</strong> <br> publications</span>
-                <span><strong>0</strong> <br> abonnés</span>
-                <span><strong>0</strong> <br> abonnements</span>
-            </div>
-            <p class="text-muted">{{currentUser?.bio || "Aucune bio disponible"}}</p>
-        </div>        
+        <div class="d-flex justify-content-around text-center mb-3">
+          <span><strong>{{posts.length}}</strong> Publications</span>
+          <span><strong>0</strong> Abonnés</span>
+          <span><strong>0</strong> Abonnements</span>
+        </div>
+        <p class="text-muted text-break">{{currentUser?.bio || "Aucune bio disponible"}}</p>
+      </div>
     </div>
-
-    <!-- Tab Navigation -->
+  
+    <!-- Navigation des onglets -->
     <ul class="nav nav-tabs mt-4" id="myTab" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="publications-tab" data-bs-toggle="tab" data-bs-target="#publications" type="button" role="tab" aria-controls="publications" aria-selected="true">
-                <i class="bi bi-grid-3x3"></i> Tous
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="videos-tab" data-bs-toggle="tab" data-bs-target="#videos" type="button" role="tab" aria-controls="videos" aria-selected="false">
-                <i class="bi bi-play-btn"></i> Vidéos
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="photos-tab" data-bs-toggle="tab" data-bs-target="#photos" type="button" role="tab" aria-controls="photos" aria-selected="false">
-                <i class="bi bi-camera"></i> Photos
-            </button>
-        </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="publications-tab" data-bs-toggle="tab" data-bs-target="#publications" type="button" role="tab" aria-controls="publications" aria-selected="true">
+          <i class="fas fa-th"></i> Tous
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="videos-tab" data-bs-toggle="tab" data-bs-target="#videos" type="button" role="tab" aria-controls="videos" aria-selected="false">
+          <i class="fas fa-video"></i> Vidéos
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="photos-tab" data-bs-toggle="tab" data-bs-target="#photos" type="button" role="tab" aria-controls="photos" aria-selected="false">
+          <i class="fas fa-camera"></i> Photos
+        </button>
+      </li>
     </ul>
+  
+    <!-- Contenu des onglets -->
+    <div class="tab-content mt-4">
+      <!-- Tous les posts -->
+      <div class="tab-pane fade show active" id="publications" role="tabpanel" aria-labelledby="publications-tab">
+        <div class="row">
+          <div *ngFor="let post of posts" class="col-sm-6 col-md-4 mb-4" >
+            <div class="card shadow-sm">
+              <img (click)="openModal('publication', post)" *ngIf="post.pictures && post.pictures.length > 0"
+                   [src]="getImageUrl(post.pictures[0].url) || 'assets/default-image.jpg'"
+                   class="card-img-top img-fluid"
+                   alt="{{ post.content }}"
+                   style="object-fit: cover; height: 200px;">
+              <video (click)="openModal('publication', post)" *ngIf="post.videos && post.videos.length > 0"
+                     [src]="getImageUrl(post.videos[0].url) || 'assets/default-video.mp4'"
+                     class="card-img-top img-fluid"
+                     preload="metadata"
+                     style="object-fit: cover; height: 200px;"></video>
+              <div class="card-body">
+                <p (click)="openModal('publication', post)" class="card-text text-truncate">{{ post.content }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <button class="btn btn-outline-danger btn-sm">
+                    <i class="fas fa-heart"></i> {{post.likes?.length}}
+                  </button>
+                  <button class="btn btn-outline-info btn-sm">
+                    <i class="fas fa-comment"></i> {{post.comments?.length}}
+                  </button>
+                  <button (click)="openModal('publication', post)" class="btn btn-outline-secondary btn-sm">
+                    <i class="fa-solid fa-eye"></i>
+                  </button>
+                  <button class="btn btn-outline-warning btn-sm" (click)="onEdit(post.id)">
+                    <i class="fas fa-edit"></i>
+                  </button>
 
-    <!-- Tab Content -->
-    <div class="tab-content" id="myTabContent">
-        <!-- All Posts -->
-        <div class="tab-pane fade show active" id="publications" role="tabpanel" aria-labelledby="publications-tab">
-            <div class="row mt-4">
-                <div *ngFor="let post of posts" class="col-sm-6 col-md-4 mb-4" (click)="openModal('publication', post)">
-                    <img *ngIf="post.pictures && post.pictures.length > 0" [src]="post.pictures[0].url || 'assets/default-image.jpg'" class="gallery-item img-fluid rounded" alt="Image de la publication">
-                    <video *ngIf="post.videos && post.videos.length > 0" [src]="post.videos[0].url || 'assets/default-video.mp4'" class="gallery-item img-fluid rounded" preload="metadata"></video>
-                    <div *ngIf="!post.pictures?.length && !post.videos?.length" class="gallery-item text-center">
-                        <p>{{ post.content || 'Aucun contenu disponible' }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>        
+                  <button class="btn btn-outline-danger btn-sm" (click)="deletePost(post.id)">
+                    <i class="fas fa-trash"></i>
+                  </button>
 
-        <!-- Videos Only -->
-        <div class="tab-pane fade" id="videos" role="tabpanel" aria-labelledby="videos-tab">
-            <div class="row mt-4">
-                <div *ngFor="let post of posts" class="col-sm-6 col-md-4 mb-4" (click)="openModal('publication', post)">
-                    <video *ngIf="post.videos && post.videos.length > 0" [src]="post.videos[0].url || 'https://static.videezy.com/system/resources/previews/000/005/529/original/Reaviling_Sjusj%C3%B8en_Ski_Senter.mp4'" class="gallery-item img-fluid rounded" preload="metadata"></video>
+                  
                 </div>
+              </div>
             </div>
+          </div>
         </div>
-        
-
-        <!-- Photos Only -->
-        <div class="tab-pane fade" id="photos" role="tabpanel" aria-labelledby="photos-tab">
-            <div class="row mt-4">
-                <div *ngFor="let post of posts" class="col-sm-6 col-md-4 mb-4" (click)="openModal('publication', post)">
-                    <img *ngIf="post.pictures && post.pictures.length > 0" [src]="post.pictures[0].url || 'assets/default-image.jpg'" class="gallery-item img-fluid rounded" alt="Image de la publication">
-                </div>
-            </div>
+      </div>
+  
+      <!-- Section vidéos uniquement -->
+      <div class="tab-pane fade" id="videos" role="tabpanel" aria-labelledby="videos-tab">
+        <div class="row mt-4">
+          <div *ngFor="let post of posts" class="col-sm-6 col-md-4 mb-4" (click)="openModal('publication', post)">
+            <video *ngIf="post.videos && post.videos.length > 0" 
+                   [src]="getImageUrl(post.videos[0].url) || 'assets/default-video.mp4'" 
+                   class="gallery-item img-fluid rounded shadow" 
+                   preload="metadata"
+                   style="height: 200px; object-fit: cover;">
+            </video>
+          </div>
         </div>
-        
+      </div>
+  
+      <!-- Section photos uniquement -->
+      <div class="tab-pane fade" id="photos" role="tabpanel" aria-labelledby="photos-tab">
+        <div class="row mt-4">
+          <div *ngFor="let post of posts" class="col-sm-6 col-md-4 mb-4" (click)="openModal('publication', post)">
+            <img *ngIf="post.pictures && post.pictures.length > 0" 
+                 [src]="getImageUrl(post.pictures[0].url) || 'assets/default-image.jpg'" 
+                 class="gallery-item img-fluid rounded shadow" 
+                 alt="Image de la publication"
+                 style="height: 200px; object-fit: cover;">
+          </div>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
+  

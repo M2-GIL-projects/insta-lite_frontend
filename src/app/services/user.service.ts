@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, of } from 'rxjs';
 import { User } from '../models/User';
+import { Post } from '../models/Post';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,10 @@ export class UserService {
 
   getUsers(): Observable<User[]> {
     return this.http.get<User[]>(this.userUrl);
+  }
+
+  getPublicUsers(): Observable<Post[]> {
+    return this.http.get<Post[]>('http://localhost:8080/portfolio/public');
   }
 
   getMe(): Observable<User> {

@@ -17,7 +17,7 @@ export class ProfilEditComponent implements OnInit {
   userId: string | null = null;
   userForm: FormGroup;
   isChangePassword: boolean = false;
-  currentProfileImageUrl: string | null = null;
+  currentProfileImageUrl: string | undefined;
   selectedImageUrl: string | null = null;
 
   constructor(
@@ -31,7 +31,7 @@ export class ProfilEditComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       bio: ['', [Validators.maxLength(255)]],
       phone: ['', [Validators.maxLength(15)]],
-      profilePic: [''],
+      photo: [''],
       password: [''],
       confirmPassword: ['']
     }, { validator: this.passwordMatchValidator });
@@ -61,8 +61,9 @@ export class ProfilEditComponent implements OnInit {
           email: user.email,
           bio: user.bio,
           phone: user.phone,
+          photo: user.profileImg
         });
-        this.currentProfileImageUrl = user.profileImg || null;
+        this.currentProfileImageUrl = user.profileImg || undefined;
       },
       (error) => {
         console.error('Erreur lors du chargement des données utilisateur:', error);
@@ -81,6 +82,9 @@ export class ProfilEditComponent implements OnInit {
     }
   }
   
+  getImageUrl(relativeUrl: string | undefined): string {
+    return `http://localhost:8080/${relativeUrl}`;
+  }
 
   onSubmit() {
     if (this.userForm.valid) {

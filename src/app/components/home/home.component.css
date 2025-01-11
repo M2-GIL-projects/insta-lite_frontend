@@ -1,0 +1,27 @@
+.post-media {
+    position: relative;
+    overflow: hidden;
+    max-height: 400px;
+    margin: 10px 0;
+  }
+  
+  .post-media img,
+  .post-media video {
+    object-fit: cover; /* Coupe les médias pour conserver le ratio */
+    width: 100%;       /* Remplit l’espace horizontalement */
+    height: auto;      /* Garde une hauteur proportionnelle */
+    border-radius: 8px;
+  }
+  
+  .video-fluid {
+    max-height: 400px;
+    width: 100%;
+  }
+  
+  @media (max-width: 768px) {
+    .post-media img,
+    .post-media video {
+      max-height: 250px; /* Ajuste la hauteur pour les petits écrans */
+    }
+  }
+  

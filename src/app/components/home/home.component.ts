@@ -9,6 +9,7 @@ import { User } from '../../models/User';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
+import { ProfilModalComponent } from '../profile/profil-modal/profil-modal.component';
 
 @Component({
   selector: 'app-home',
@@ -104,6 +105,12 @@ export class HomeComponent implements OnInit {
     );
   }
 
+  getImageUrl(relativeUrl: string | undefined): string {
+    return `http://localhost:8080/${relativeUrl}`;
+  }
+  
+  
+
   openCommentModal(postId: number): void {
     if (!this.currentUser) {
       alert('Vous devez être connecté pour commenter un post');
@@ -118,6 +125,14 @@ export class HomeComponent implements OnInit {
       }
     });
   }
+
+  openHomeModal(type: string, item: any) {
+      const modalRef = this.modalService.open(ProfilModalComponent, { size: 'lg' });
+      modalRef.componentInstance.type = type;
+      modalRef.componentInstance.item = item;
+      modalRef.componentInstance.currentUser = this.currentUser;
+  }
+
 
   addComment(postId: number, commentContent: string): void {
     if (!this.currentUser) return;

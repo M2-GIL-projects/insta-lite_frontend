@@ -1,73 +1,142 @@
 <div class="container mt-4 mb-5">
-  <div class="card">
-    <div class="card-header"><h3 class="mb-4">Modifier le profil</h3></div>
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+      <h3 class="mb-0">Modifier le profil</h3>
+    </div>
     <div class="card-body">
       <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
-      <div class="mb-3">
-        <label for="profilePic" class="form-label">Photo de profil</label>
-        <input type="file" class="form-control" id="profilePic" (change)="onFileSelected($event)" accept="image/*">
-        <div class="mt-2">
-          <img [src]="selectedImageUrl || currentProfileImageUrl || 'assets/default-profile.png'" alt="Photo de profil" class="img-thumbnail" style="max-width: 200px;">
-        </div>
-      </div>
-      <div class="mb-3">
-        <label for="pseudo" class="form-label">Nom d'utilisateur</label>
-        <input type="text" class="form-control" id="pseudo" formControlName="pseudo">
-        <div *ngIf="userForm.get('pseudo')?.invalid && (userForm.get('pseudo')?.dirty || userForm.get('pseudo')?.touched)" class="text-danger">
-          <small *ngIf="userForm.get('pseudo')?.errors?.['required']">Le nom d'utilisateur est requis.</small>
-          <small *ngIf="userForm.get('pseudo')?.errors?.['minlength']">Le nom d'utilisateur doit contenir au moins 3 caractères.</small>
-          <small *ngIf="userForm.get('pseudo')?.errors?.['maxlength']">Le nom d'utilisateur ne doit pas dépasser 7 caractères.</small>
-        </div>
-      </div>
-      <div class="mb-3">
-        <label for="bio" class="form-label">Biographie</label>
-        <textarea class="form-control" id="bio" rows="3" formControlName="bio"></textarea>
-        <div *ngIf="userForm.get('bio')?.invalid && (userForm.get('bio')?.dirty || userForm.get('bio')?.touched)" class="text-danger">
-          <small *ngIf="userForm.get('bio')?.errors?.['maxlength']">La biographie ne doit pas dépasser 255 caractères.</small>
-        </div>
-      </div>
-      <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input type="email" class="form-control" id="email" formControlName="email">
-        <div *ngIf="userForm.get('email')?.invalid && (userForm.get('email')?.dirty || userForm.get('email')?.touched)" class="text-danger">
-          <small *ngIf="userForm.get('email')?.errors?.['required']">L'email est requis.</small>
-          <small *ngIf="userForm.get('email')?.errors?.['email']">Veuillez entrer une adresse email valide.</small>
-        </div>
-      </div>
-      <div class="mb-3">
-        <label for="phone" class="form-label">Téléphone</label>
-        <input type="tel" class="form-control" id="phone" formControlName="phone">
-        <div *ngIf="userForm.get('phone')?.invalid && (userForm.get('phone')?.dirty || userForm.get('phone')?.touched)" class="text-danger">
-          <small *ngIf="userForm.get('phone')?.errors?.['maxlength']">Le numéro de téléphone ne doit pas dépasser 15 caractères.</small>
-        </div>
-      </div>
-      <div class="mb-3 form-check">
-        <input type="checkbox" class="form-check-input" id="changePassword" (change)="togglePasswordChange()">
-        <label class="form-check-label" for="changePassword">Changer le mot de passe</label>
-      </div>
-      <div *ngIf="isChangePassword">
+        <!-- Photo de profil -->
         <div class="mb-3">
-          <label for="password" class="form-label">Nouveau mot de passe</label>
-          <input type="password" class="form-control" id="password" formControlName="password">
-          <div *ngIf="userForm.get('password')?.invalid && (userForm.get('password')?.dirty || userForm.get('password')?.touched)" class="text-danger">
-            <small *ngIf="userForm.get('password')?.errors?.['required']">Le mot de passe est requis.</small>
-            <small *ngIf="userForm.get('password')?.errors?.['minlength']">Le mot de passe doit contenir au moins 8 caractères.</small>
+          <label for="profilePic" class="form-label fw-bold">Photo de profil</label>
+          <input 
+            type="file" 
+            class="form-control" 
+            id="photo" 
+            formControlName="photo" 
+            (change)="onFileSelected($event)" 
+            accept="image/*">
+          <div class="mt-3 text-center">
+            <img 
+              [src]="selectedImageUrl || getImageUrl(currentProfileImageUrl) || 'assets/default.jpg'" 
+              alt="Photo de profil" 
+              class="img-thumbnail shadow-sm" 
+              style="max-width: 150px; border-radius: 50%;">
           </div>
         </div>
-        <div class="mb-3">
-          <label for="confirmPassword" class="form-label">Confirmer le nouveau mot de passe</label>
-          <input type="password" class="form-control" id="confirmPassword" formControlName="confirmPassword">
-          <div *ngIf="userForm.hasError('mismatch') && userForm.get('confirmPassword')?.touched" class="text-danger">
-            <small>Les mots de passe ne correspondent pas.</small>
-          </div>
-        </div>
-      </div>
-      <button type="submit" class="btn btn-primary" [disabled]="!userForm.valid">Enregistrer les modifications</button>
-    </form>
 
+        <!-- Nom d'utilisateur -->
+        <div class="mb-3">
+          <label for="pseudo" class="form-label fw-bold">Nom d'utilisateur</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="pseudo" 
+            formControlName="pseudo" 
+            placeholder="Entrez votre nom d'utilisateur">
+          <div 
+            *ngIf="userForm.get('pseudo')?.invalid && (userForm.get('pseudo')?.dirty || userForm.get('pseudo')?.touched)" 
+            class="text-danger mt-1">
+            <small *ngIf="userForm.get('pseudo')?.errors?.['required']">Le nom d'utilisateur est requis.</small>
+            <small *ngIf="userForm.get('pseudo')?.errors?.['minlength']">Minimum 3 caractères.</small>
+            <small *ngIf="userForm.get('pseudo')?.errors?.['maxlength']">Maximum 7 caractères.</small>
+          </div>
+        </div>
+
+        <!-- Biographie -->
+        <div class="mb-3">
+          <label for="bio" class="form-label fw-bold">Biographie</label>
+          <textarea 
+            class="form-control" 
+            id="bio" 
+            rows="3" 
+            formControlName="bio" 
+            placeholder="Écrivez quelque chose sur vous..."></textarea>
+          <div 
+            *ngIf="userForm.get('bio')?.invalid && (userForm.get('bio')?.dirty || userForm.get('bio')?.touched)" 
+            class="text-danger mt-1">
+            <small>Maximum 255 caractères.</small>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="mb-3">
+          <label for="email" class="form-label fw-bold">Email</label>
+          <input 
+            type="email" 
+            class="form-control" 
+            id="email" 
+            formControlName="email" 
+            placeholder="Adresse email" 
+            [disabled]="true">
+        </div>
+
+        <!-- Téléphone -->
+        <div class="mb-3">
+          <label for="phone" class="form-label fw-bold">Téléphone</label>
+          <input 
+            type="tel" 
+            class="form-control" 
+            id="phone" 
+            formControlName="phone" 
+            placeholder="Numéro de téléphone">
+          <div 
+            *ngIf="userForm.get('phone')?.invalid && (userForm.get('phone')?.dirty || userForm.get('phone')?.touched)" 
+            class="text-danger mt-1">
+            <small>Maximum 15 caractères.</small>
+          </div>
+        </div>
+
+        <!-- Changer le mot de passe -->
+        <div class="mb-3 form-check">
+          <input 
+            type="checkbox" 
+            class="form-check-input" 
+            id="changePassword" 
+            (change)="togglePasswordChange()">
+          <label class="form-check-label fw-bold" for="changePassword">Changer le mot de passe</label>
+        </div>
+
+        <!-- Nouveau mot de passe -->
+        <div *ngIf="isChangePassword">
+          <div class="mb-3">
+            <label for="password" class="form-label fw-bold">Nouveau mot de passe</label>
+            <input 
+              type="password" 
+              class="form-control" 
+              id="password" 
+              formControlName="password" 
+              placeholder="Entrez un nouveau mot de passe">
+            <div 
+              *ngIf="userForm.get('password')?.invalid && (userForm.get('password')?.dirty || userForm.get('password')?.touched)" 
+              class="text-danger mt-1">
+              <small>Minimum 8 caractères requis.</small>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="confirmPassword" class="form-label fw-bold">Confirmer le mot de passe</label>
+            <input 
+              type="password" 
+              class="form-control" 
+              id="confirmPassword" 
+              formControlName="confirmPassword" 
+              placeholder="Confirmez votre mot de passe">
+            <div 
+              *ngIf="userForm.hasError('mismatch') && userForm.get('confirmPassword')?.touched" 
+              class="text-danger mt-1">
+              <small>Les mots de passe ne correspondent pas.</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bouton d'enregistrement -->
+        <button 
+          type="submit" 
+          class="btn btn-primary w-100 mt-3" 
+          [disabled]="!userForm.valid">
+          Enregistrer les modifications
+        </button>
+      </form>
     </div>
   </div>
-    
-    
-  </div>
-  
+</div>

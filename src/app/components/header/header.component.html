@@ -14,36 +14,47 @@
       <!-- Navbar Links -->
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item" *ngIf="!isLoggedIn">
+          <li class="nav-item" *ngIf="!(isLoggedIn$ | async)">
             <a class="nav-link" routerLink="/">
               <i class="fas fa-home me-1"></i> Accueil
             </a>
           </li>
-          <li class="nav-item" *ngIf="!isLoggedIn">
+          <li class="nav-item" *ngIf="!(isLoggedIn$ | async)">
             <a class="nav-link" routerLink="/login">
               <i class="fas fa-sign-in-alt me-1"></i> Login
             </a>
           </li>
-          <li class="nav-item" *ngIf="!isLoggedIn">
+          <li class="nav-item" *ngIf="!(isLoggedIn$ | async)">
             <a class="nav-link" routerLink="/signup">
-              <i class="fas fa-user-plus me-1"></i> Créer un compte
+              <i class="fas fa-user-plus me-1"></i> Créer
             </a>
           </li>
-          <li class="nav-item" *ngIf="isLoggedIn">
+          <li class="nav-item" *ngIf="isLoggedIn$ | async">
             <a class="nav-link" routerLink="/addPost">
-              <i class="fas fa-add me-1"></i> Créer un post
+              <i class="fas fa-plus-circle"></i>
             </a>
           </li>
+
+          <li class="nav-item" *ngIf="(isLoggedIn$ | async ) || !(isLoggedIn$ | async)">
+            <a class="nav-link" routerLink="">
+              <i class="fas fa-bell fa-fw"></i>
+              <span class="badge bg-danger badge-counter">3+</span>
+            </a>
+          </li>
+
+          
+          
           
   
           <!-- User Avatar avec icône dropdown -->
-          <li class="nav-item dropdown" *ngIf="isLoggedIn">
+          <li class="nav-item dropdown" *ngIf="isLoggedIn$ | async">
             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <img [src]="currentUser?.profileImg || 'assets/defaut.jpg'" alt="Avatar" class="rounded-circle me-2" style="width: 40px; height: 40px;">
+              <img [src]="getImageUrl(currentUser?.profileImg) || 'assets/defaut.jpg'" alt="Avatar" class="rounded-circle me-2" style="width: 40px; height: 40px;">
               <span> {{ currentUser?.pseudo }}</span>
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
               <li><a class="dropdown-item" routerLink="/profile"><i class="fas fa-user me-2"></i> Voir Profil</a></li>
+              <li><a class="dropdown-item" *ngIf="(isLoggedIn$ | async) && currentUser?.role=='ADMIN' " routerLink="/admin"><i class="fas fa-lock fa-shake me-2"></i> Administration</a></li>
               <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Paramètres</a></li>
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" (click)="logout()"><i class="fas fa-sign-out-alt me-2"></i> Déconnexion</a></li>

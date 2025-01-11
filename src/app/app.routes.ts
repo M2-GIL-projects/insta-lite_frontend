@@ -10,6 +10,7 @@ import { ProfilModalComponent } from './components/profile/profil-modal/profil-m
 import { RegisterComponent } from './components/register/register.component';
 import { AuthGuard } from './components/auth.guard';
 import { CreatePostComponent } from './components/create-post/create-post.component';
+import { AdminGuard } from './components/admin.guard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -19,10 +20,26 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: RegisterComponent },
   { path: 'addPost', component: CreatePostComponent, canActivate: [AuthGuard] },
+  {
+    path: 'addPost/:postId',
+    component: CreatePostComponent,
+    canActivate: [AuthGuard],
+  },
   { path: 'profile', component: ProfilInfoComponent, canActivate: [AuthGuard] },
-  { path: 'profile/:userId', component: ProfilEditComponent, canActivate: [AuthGuard] },
-  { path: 'profile/contenu/:Id', component: ProfilModalComponent, canActivate: [AuthGuard] },
-  { path: 'admin', component: AdminDashboardComponent, canActivate: [AuthGuard] },
+  {
+    path: 'profile/:userId',
+    component: ProfilEditComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'profile/contenu/:Id',
+    component: ProfilModalComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'admin',
+    component: AdminDashboardComponent,
+    canActivate: [AuthGuard, AdminGuard],
+  },
   // Ajoutez un AdminGuard spécifique pour la route admin si nécessaire
 ];
-
