@@ -7,6 +7,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PostService } from '../../../services/post.service';
 import { Post } from '../../../models/Post';
 import { CommonModule } from '@angular/common';
+import { AlertService } from '../../../services/alert.service';
 
 @Component({
   selector: 'app-profil-info',
@@ -18,11 +19,14 @@ export class ProfilInfoComponent implements OnInit {
   posts: Post[] = [];
   currentUser: User | null = null;
   userId? : number ;
+  showAllComments: boolean = false;
+
   constructor(
     private postService: PostService,
     private userService: UserService,
     private modalService: NgbModal,
-    private router : Router
+    private router : Router,
+    private alertService: AlertService
   ) {}
 
   ngOnInit() {
@@ -67,41 +71,48 @@ export class ProfilInfoComponent implements OnInit {
 
   }
 
-deletePost(postId: number) {
-  if(postId){
-    const confirmDelete = confirm('Êtes-vous sûr de vouloir supprimer ce post ?');
-    if(confirmDelete){
-      this.postService.deletePost(postId).subscribe(
-        (response) => {
-          console.log('Réponse de suppression:', response);
-          alert('Post supprimé avec succès');
-          this.loadUserPosts(this.userId as number);
-        },
-        (error) => {
-          //console.error('Erreur lors de la suppression du post', error);
-          if (error.status === 200) {
-            // La suppression a réussi malgré l'erreur de parsing
-            alert('Post supprimé avec succès');
-            this.loadUserPosts(this.userId as number);
+  deletePost(postId: number) {
+    if (postId) {
+      this.alertService.confirmDelete("Êtes-vous sûr de vouloir supprimer ce post ?")
+        .then((confirmed) => {
+          if (confirmed) {
+            // Appeler le service de suppression
+            this.postService.deletePost(postId).subscribe(
+              (response) => {
+                // Succès : afficher une alerte et recharger les posts
+                this.alertService.showSuccess("Suppression !", "Post supprimé avec succès !");
+                this.loadUserPosts(this.userId as number);
+              },
+              (error) => {
+                // Échec : gérer les erreurs et afficher une alerte
+                this.alertService.showError("Erreur !", "Une erreur s'est produite lors de la suppression du post.");
+                console.error("Erreur lors de la suppression du post :", error);
+              }
+            );
           } else {
-            alert('Erreur lors de la suppression du post');
+            console.log("L'utilisateur a annulé la suppression.");
           }
-        }
-      );
+        });
+    } else {
+      console.warn("Aucun ID de post fourni pour la suppression.");
     }
   }
-}
+  
 
 
 
-  getImageUrl(relativeUrl: string | undefined): string {
-    return `http://localhost:8080/${relativeUrl}`;
+getImageUrl(relativeUrl: string | undefined): string {
+  if(relativeUrl == undefined){
+    return 'assets/defaut.jpg';
   }
+  return `http://localhost:8080/${relativeUrl}`;
+}
 
   openModal(type: string, item: any) {
     const modalRef = this.modalService.open(ProfilModalComponent, { size: 'lg' });
     modalRef.componentInstance.type = type;
     modalRef.componentInstance.item = item;
+    modalRef.componentInstance.showAllComments = this.showAllComments;
     modalRef.componentInstance.currentUser = this.currentUser;
 }
 

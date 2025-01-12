@@ -19,6 +19,7 @@ export class ProfilEditComponent implements OnInit {
   isChangePassword: boolean = false;
   currentProfileImageUrl: string | undefined;
   selectedImageUrl: string | null = null;
+  remainingChars: number = 255;
 
   constructor(
     private route: ActivatedRoute,
@@ -44,6 +45,8 @@ export class ProfilEditComponent implements OnInit {
       ? null : { mismatch: true };
   }
 
+
+
   ngOnInit() {
     this.route.paramMap.subscribe((params) => {
       this.userId = params.get('userId');
@@ -51,10 +54,13 @@ export class ProfilEditComponent implements OnInit {
         this.loadUserData(this.userId);
       }
     });
+    this.userForm.get('content')?.valueChanges.subscribe(() => {
+      this.updateCharCount();
+    });
   }
 
   loadUserData(userId: string) {
-    this.userService.getUserById(userId).subscribe(
+    this.userService.getUserById(+userId).subscribe(
       (user: User) => {
         this.userForm.patchValue({
           pseudo: user.pseudo,
@@ -71,6 +77,11 @@ export class ProfilEditComponent implements OnInit {
     );
   }
 
+  updateCharCount() {
+    const contentLength = this.userForm.get('content')?.value.length || 0;
+    this.remainingChars = Math.max(0, 255 - contentLength);
+  }
+
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
@@ -83,6 +94,9 @@ export class ProfilEditComponent implements OnInit {
   }
   
   getImageUrl(relativeUrl: string | undefined): string {
+    if(relativeUrl == undefined){
+      return 'assets/defaut.jpg';
+    }
     return `http://localhost:8080/${relativeUrl}`;
   }
 
@@ -106,6 +120,11 @@ export class ProfilEditComponent implements OnInit {
         }
       );
     }
+  }
+
+  onCancel(){
+    this.router.navigate(['/profile']); 
+  this.userForm.reset();
   }
 
   togglePasswordChange() {

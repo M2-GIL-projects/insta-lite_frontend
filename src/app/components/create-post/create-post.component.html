@@ -1,49 +1,86 @@
 <div class="container mt-4">
   <div class="card shadow-sm">
-    <div class="card-header bg-primary text-white">
-      <h2 class="mb-0">{{ isEditMode ? 'Modifier le post' : 'Créer un nouveau post' }}</h2>
+    <!-- En-tête de la carte -->
+    <div
+      class="card-header bg-primary text-white d-flex justify-content-between align-items-center"
+    >
+      <h2 class="mb-0">
+        <i class="fas fa-file-alt"></i>
+        {{ isEditMode ? "Modifier le post" : "Créer un nouveau post" }}
+      </h2>
     </div>
+
+    <!-- Contenu de la carte -->
     <div class="card-body">
       <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
-        <!-- Contenu du post -->
-        <div class="mb-3">
+        <!-- Champ Contenu -->
+        <div class="mb-4">
           <label for="content" class="form-label fw-bold">Contenu</label>
-          <textarea 
-            class="form-control" 
-            id="content" 
-            rows="3" 
-            formControlName="content" 
-            placeholder="Écrivez ici votre contenu..."></textarea>
-          <div *ngIf="postForm.get('content')?.invalid && postForm.get('content')?.touched" class="text-danger mt-1">
-            <small *ngIf="postForm.get('content')?.errors?.['required']">Le contenu est requis.</small>
-            <small *ngIf="postForm.get('content')?.errors?.['maxlength']">Le contenu ne doit pas dépasser 255 caractères.</small>
+          <textarea
+            class="form-control"
+            id="content"
+            rows="4"
+            formControlName="content"
+            placeholder="Écrivez ici votre contenu..."
+            (input)="updateCharCount()"
+          ></textarea>
+          <small class="text-muted"
+            >Caractères restants : {{ remainingChars }}</small
+          >
+          <div
+            *ngIf="
+              postForm.get('content')?.invalid &&
+              postForm.get('content')?.touched
+            "
+            class="text-danger mt-1"
+          >
+            <small *ngIf="postForm.get('content')?.errors?.['required']"
+              >Le contenu est requis.</small
+            >
+            <small *ngIf="postForm.get('content')?.errors?.['maxlength']"
+              >Le contenu ne doit pas dépasser 255 caractères.</small
+            >
           </div>
         </div>
 
-        <!-- Option Privé -->
-        <div class="mb-3 form-check">
-          <input type="checkbox" class="form-check-input" id="isPrivate" formControlName="isPrivate" (change)="onPrivacyChange()">
-          <label class="form-check-label" for="isPrivate">Rendre privé</label>
+        <!-- Champ Privé/Public -->
+        <div class="form-check mb-4">
+          <input
+            type="checkbox"
+            class="form-check-input"
+            id="private"
+            formControlName="private"
+          />
+          <label class="form-check-label fw-bold" for="private">
+            Rendre privé <i class="fas fa-lock"></i
+          ></label>
         </div>
 
-        <!-- Bouton de soumission -->
-        <button 
-          type="submit" 
-          class="btn btn-primary w-100" 
-          [disabled]="!postForm.valid">
-          {{ isEditMode ? 'Mettre à jour le post' : 'Créer le post' }}
-        </button>
+        <!-- Boutons d'action -->
+        <div class="d-flex justify-content-between">
+          <button
+            type="submit"
+            class="btn btn-primary w-45"
+            [disabled]="!postForm.valid"
+          >
+            {{ isEditMode ? "Mettre à jour le post" : "Créer le post" }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger w-45"
+            (click)="cancelAction()"
+          >
+            Annuler
+          </button>
+        </div>
       </form>
     </div>
   </div>
 </div>
 
-
-
-
 <!-- Modale pour ajout de médias -->
 <ng-template #mediaModal let-modal>
-  <div class="modal-content">
+  <div class="modal-content" style="max-width: 600px; margin: auto;">
     <!-- En-tête de la modale -->
     <div class="modal-header bg-secondary text-white">
       <h4 class="modal-title">Ajouter des médias au post</h4>
@@ -52,35 +89,33 @@
 
     <!-- Corps de la modale -->
     <div class="modal-body">
+      <!-- Affichage de l'ancienne image si elle existe -->
+      <div *ngIf="oldImageUrl" class="mb-3">
+        <h5>Ancienne Image :</h5>
+        <img [src]="oldImageUrl" class="img-thumbnail shadow-sm mb-2" alt="Ancienne image" style="max-width: 100%; height: auto; max-height: 150px;" />
+        <p>Voulez-vous remplacer cette image ?</p>
+      </div>
+
+      <!-- Affichage de l'ancienne vidéo si elle existe -->
+      <div *ngIf="oldVideoUrl" class="mb-3">
+        <h5>Ancienne Vidéo :</h5>
+        <video [src]="oldVideoUrl" class="img-thumbnail shadow-sm mb-2" controls style="max-width: 100%; height: auto; max-height: 150px;"></video>
+        <p>Voulez-vous remplacer cette vidéo ?</p>
+      </div>
+
       <!-- Entrée pour le téléchargement de fichiers -->
       <div class="mb-3">
         <label for="files" class="form-label fw-bold">Images ou Vidéos</label>
-        <input 
-          type="file" 
-          class="form-control" 
-          id="files" 
-          (change)="onFilesSelected($event)" 
-          accept="image/*,video/*" 
-          multiple>
+        <input type="file" class="form-control" id="files" (change)="onFilesSelected($event)" accept="image/*,video/*" multiple />
       </div>
 
       <!-- Aperçu des fichiers -->
       <div class="mb-3" *ngIf="previewUrls.length > 0">
         <h5>Aperçu des fichiers sélectionnés :</h5>
         <div class="row">
-          <div 
-            class="col-md-3 mb-2 d-flex justify-content-center align-items-center" 
-            *ngFor="let url of previewUrls; let i = index">
-            <img *ngIf="selectedFiles[i].type.startsWith('image/')" 
-                 [src]="url" 
-                 class="img-thumbnail shadow-sm" 
-                 alt="Aperçu image"
-                 style="width: 100%; height: auto;">
-            <video *ngIf="selectedFiles[i].type.startsWith('video/')" 
-                   [src]="url" 
-                   class="img-thumbnail shadow-sm" 
-                   controls
-                   style="width: 100%; height: auto;"></video>
+          <div class="col-md-3 mb-2 d-flex justify-content-center align-items-center" *ngFor="let url of previewUrls; let i = index">
+            <img *ngIf="selectedFiles[i].type.startsWith('image/')" [src]="url" class="img-thumbnail shadow-sm" alt="Aperçu image" style="width: 100%; height: auto;" />
+            <video *ngIf="selectedFiles[i].type.startsWith('video/')" [src]="url" class="img-thumbnail shadow-sm" controls style="width: 100%; height: auto;"></video>
           </div>
         </div>
       </div>
@@ -88,12 +123,9 @@
 
     <!-- Pied de la modale -->
     <div class="modal-footer">
-      <button type="button" class="btn btn-outline-primary" (click)="addMediaToPost()">
-        Ajouter les médias
-      </button>
-      <button type="button" class="btn btn-outline-danger" (click)="annuler()">
-       Annuler
-      </button>
+      <button type="button" class="btn btn-outline-primary" (click)="addMediaToPost()">Ajouter les médias</button>
+      <button type="button" class="btn btn-outline-danger" (click)="annuler()">Annuler</button>
     </div>
   </div>
 </ng-template>
+

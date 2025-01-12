@@ -1,0 +1,46 @@
+<div class="container-fluid p-4">
+    <div id="videos" class="card shadow mb-4">
+        <div class="card-header bg-primary text-white d-flex align-items-center">
+            <h2 class="m-0">
+                <i class="fas fa-video"></i> Gestion des vidéos
+            </h2>
+        </div>
+        
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Preview</th>
+                        <th>Extension</th>
+                        <th>Visibilité</th>
+                        <th>Post</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let video of videos">
+                        <td>{{video.id}}</td>
+                        <td>{{video.url}}</td>
+                        <td>{{video.extension}}</td>
+                        <td>{{video.isPrivate ? "Privé" : "Public"}}</td>
+                        <td>{{video.post}}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning me-0">
+                                <i class="fas fa-edit"></i> 
+                            </button>
+                            <button class="btn btn-sm btn-danger me-1">
+                                <i class="fas fa-trash"></i> 
+                            </button>
+                            <button class="btn btn-sm btn-info me-1">
+                                <i class="fas fa-eye"></i> 
+                            </button>
+                            <button class="btn btn-sm btn-success me-1">
+                                <i class="fas fa-download"></i>
+                              </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>

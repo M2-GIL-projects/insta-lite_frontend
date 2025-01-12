@@ -1,0 +1,50 @@
+<div id="users" class="container mt-2">
+  <!-- Gestion des images -->
+  <div id="images" class="card shadow mb-4">
+    <div class="card-header bg-info text-white d-flex align-items-center">
+      <h2 class="m-0"><i class="fas fa-images"></i> Gestion des images</h2>
+    </div>
+    <div class="card-body">
+      <table class="table table-striped">
+        <thead class="thead-dark">
+          <tr>
+            <th>ID</th>
+            <th>Preview</th>
+            <th>Visibilité</th>
+            <th>Post</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let image of images">
+            <td>{{ image.id }}</td>
+            <td>
+              <img
+                [src]="getImageUrl(image.url) || 'assets/defaut.jpg'"
+                alt="image"
+                class="rounded-circle me-2"
+                style="width: 40px; height: 40px"
+              />
+            </td>
+            <td>{{ image.private ? "Privé" : "Public" }}</td>
+            <td>{{ image.post }}</td>
+            <td>
+              <button class="btn btn-sm btn-warning me-1">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn btn-sm btn-danger me-1">
+                <i class="fas fa-trash"></i>
+              </button>
+              <button class="btn btn-sm btn-info me-1">
+                <i class="fas fa-eye"></i>
+              </button>
+              <button class="btn btn-sm btn-info me-1">
+                <i class="fas fa-download"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

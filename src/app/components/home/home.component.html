@@ -4,19 +4,24 @@
     <div class="col-md-8">
       <div *ngFor="let post of posts" class="card mb-4 shadow-sm">
         <!-- En-tête du post -->
-        <div class="card-header d-flex align-items-center">
+        <div
+          style="cursor: pointer"
+          (click)="voirUser(post.user.id)"
+          class="card-header d-flex align-items-center"
+        >
           <img
-            [src]="getImageUrl(post.user.profileImg) || 'assets/default.jpg'"
+            [src]="getImageUrl(post.user.profileImg)"
             class="rounded-circle"
             width="40"
             height="40"
             alt="Avatar"
           />
+
           <span class="ms-2 fw-bold">{{ post.user.pseudo }}</span>
         </div>
 
         <!-- Média du post (image ou vidéo) -->
-        <div (click)="openHomeModal('publication', post)" class="post-media">
+        <div (click)="voirPost(post.id)" class="post-media">
           <img
             *ngIf="post.pictures && post.pictures.length > 0"
             [src]="getImageUrl(post.pictures[0].url)"
@@ -33,30 +38,68 @@
 
         <!-- Corps du post -->
         <div class="card-body">
-          <p (click)="openHomeModal('publication', post)" >{{ post.content }}</p>
+          <p (click)="openHomeModal('publication', post)">{{ post.content }}</p>
           <div class="d-flex align-items-center mb-3">
             <button
-              (click)="likePost(post.id)"
-              class="btn btn-sm btn-outline-danger me-3"
+              (click)="toggleLike(post)"
+              class="btn btn-sm me-2"
+              [ngClass]="{
+                'btn-danger': isLikedByCurrentUser(post),
+                'btn-outline-danger': !isLikedByCurrentUser(post)
+              }"
             >
-              <i class="fas fa-heart me-1"></i>{{ post.likes?.length }} 
+              <i
+                class="fas"
+                [ngClass]="{
+                  'fa-heart': isLikedByCurrentUser(post),
+                  'fa-heart-o': !isLikedByCurrentUser(post)
+                }"
+              ></i>
+              {{ post.likes?.length || 0 }}
             </button>
+
             <button
               (click)="openCommentModal(post.id)"
-              class="btn btn-sm btn-outline-info"
+              class="btn btn-sm btn-outline-info me-1"
             >
-              <i class="fas fa-comment me-1"></i>{{ post.comments?.length }} 
+              <i class="fas fa-comment me-1"></i>{{ post.comments?.length }}
+            </button>
+
+            <button class="btn btn-sm btn-outline-link">
+              <i class="fas fa-calendar me-1"></i
+              >{{ post.createdAt | date : "short" }}
             </button>
           </div>
 
           <!-- Liste des commentaires -->
-          <div *ngFor="let comment of post.comments || []" class="comment ps-3">
-            <p>
-              <strong>{{ comment.content }}</strong>
-              <small class="text-muted d-block">
-                <i class="far fa-clock"></i> {{ comment.createdAt | date: 'short' }}
-              </small>
-            </p>
+          <div class="comments-section mt-3">
+            <div
+              *ngFor="let comment of post.comments || []"
+              class="comment mb-2"
+            >
+              <div class="d-flex align-items-start">
+                <img
+                  [src]="getImageUrl(comment.user.profileImg)"
+                  class="rounded-circle me-2"
+                  width="32"
+                  height="32"
+                  alt="Avatar"
+                />
+                <div class="comment-content">
+                  <p class="mb-0">
+                    <span class="fw-bold me-2">{{ comment.user.pseudo }}</span>
+                    <span>{{ comment.content }}</span>
+                  </p>
+                  <small class="text-muted">
+                    {{ comment.createdAt | date : "shortDate" }}
+                    <!-- Ajoutez un lien pour répondre si nécessaire -->
+                    <a style="cursor: pointer;" (click)="voirPost(post.id)" class="ms-2 text-muted">Répondre</a>
+                  </small>
+                </div>
+              </div>
+            </div>
+            <!-- Ajoutez un lien pour voir plus de commentaires si nécessaire -->
+            <a (click)="voirPost(post.id)" class="text-muted" *ngIf="post.comments && post.comments.length > 2">Voir tous les commentaires</a>
           </div>
         </div>
       </div>
@@ -64,28 +107,33 @@
 
     <!-- Section des suggestions -->
     <div class="col-lg-4">
-      <div class="p-3 bg-white rounded shadow-sm">
-        <h5 class="mb-3">
-          <i class="fas fa-user-friends me-2"></i>Suggestions
-        </h5>
-
-        <div
-          *ngFor="let suggestion of suggestions"
-          class="d-flex align-items-center mb-3"
-        >
-          <img
-            [src]="suggestion.profileImg || 'https://picsum.photos/50/50'"
-            alt="Suggestion"
-            class="rounded-circle me-3"
-            width="50"
-            height="50"
-          />
-          <div>
-            <h6 class="mb-0">{{ suggestion.pseudo }}</h6>
+      <div class="card bg-white rounded shadow-sm">
+        <div class="card-header">
+          <h5 class="mb-3">
+            <i class="fas fa-user-friends me-2"></i>Suggestions
+          </h5>
+        </div>
+        <div class="card-body">
+          <div
+            *ngFor="let suggestion of suggestions"
+            class="d-flex align-items-center mb-3"
+          >
+            <img
+              style="cursor: pointer"
+              (click)="voirUser(suggestion.id)"
+              [src]="suggestion.profileImg || 'https://picsum.photos/50/50'"
+              alt="Suggestion"
+              class="rounded-circle me-3"
+              width="50"
+              height="50"
+            />
+            <div style="cursor: pointer" (click)="voirUser(suggestion.id)">
+              <h6 class="mb-0">{{ suggestion.pseudo }}</h6>
+            </div>
+            <button class="btn btn-outline-primary btn-sm ms-auto">
+              <i class="fas fa-user-plus me-1"></i>Suivre
+            </button>
           </div>
-          <button class="btn btn-outline-primary btn-sm ms-auto">
-            <i class="fas fa-user-plus me-1"></i>Suivre
-          </button>
         </div>
       </div>
     </div>

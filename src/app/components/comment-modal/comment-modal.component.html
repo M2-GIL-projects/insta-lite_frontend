@@ -1,12 +1,35 @@
-<div class="modal-header">
-    <h4 class="modal-title">Ajouter un commentaire</h4>
-    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
-        <span aria-hidden="true">&times;</span>
+<div class="modal-header bg-primary text-white">
+    <h4 class="modal-title">
+      <i class="fas fa-comment-dots me-2"></i> Ajouter un commentaire
+    </h4>
+    <button 
+      type="button" 
+      class="btn-close text-white" 
+      aria-label="Close" 
+      (click)="activeModal.dismiss()">
     </button>
-</div>
-<div class="modal-body">
-    <textarea [(ngModel)]="commentContent" placeholder="Écrivez votre commentaire ici..." rows="3" class="form-control"></textarea>
-</div>
-<div class="modal-footer">
-    <button type="button" class="btn btn-primary" (click)="submit()">Envoyer</button> <!-- Appel à submit sans argument -->
-</div>
+  </div>
+  
+  <div class="modal-body">
+    <textarea 
+      [(ngModel)]="commentContent" 
+      placeholder="Écrivez votre commentaire ici..." 
+      rows="3" 
+      class="form-control"></textarea>
+  </div>
+  
+  <div class="modal-footer">
+    <button 
+      type="button" 
+      class="btn btn-secondary" 
+      (click)="activeModal.dismiss()">
+      <i class="fas fa-times me-2"></i>Annuler
+    </button>
+    <button 
+      type="button" 
+      class="btn btn-primary" 
+      (click)="submit()">
+      <i class="fas fa-paper-plane me-2"></i>Envoyer
+    </button>
+  </div>
+  

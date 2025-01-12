@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Post } from '../../models/Post';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'app-create-post',
@@ -23,18 +24,21 @@ export class CreatePostComponent implements OnInit {
   @ViewChild('mediaModal') mediaModal: any;
   isEditMode: boolean = false; 
   postId : number | null = null;
-
+  remainingChars: number = 255;
+  oldImageUrl: string | null = null;
+  oldVideoUrl: string | null = null;
 
   constructor(
     private fb: FormBuilder, 
     private postService: PostService,
     private modalService: NgbModal,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private alertService: AlertService
   ) {
     this.postForm = this.fb.group({
       content: ['', [Validators.required, Validators.maxLength(255)]],
-      isPrivate: [false]
+      private: [false]
     });
   }
 
@@ -42,10 +46,13 @@ export class CreatePostComponent implements OnInit {
     this.route.paramMap.subscribe((params) => {
       const id = params.get('postId');
       if (id) {
-        this.postId = +id; // Convertir en nombre
+        this.postId = +id; 
         this.isEditMode = true;
         this.loadPostData(this.postId);
       }
+    });
+    this.postForm.get('content')?.valueChanges.subscribe(() => {
+      this.updateCharCount();
     });
   }
 
@@ -54,51 +61,60 @@ export class CreatePostComponent implements OnInit {
       (post: Post) => {
         this.postForm.patchValue({
           content: post.content,
-          isPrivate: post.isPrivate // Charger la valeur existante pour isPrivate
+          private: post.private
         });
+        this.oldImageUrl = post.pictures && post.pictures.length > 0 ? this.getImageUrl(post.pictures[0].url) : null;
+        this.oldVideoUrl = post.videos && post.videos.length > 0 ? this.getImageUrl(post.videos[0].url) : null;
       },
       (error) => {
-       console.log('Erreur lors de la récupération des données', error);
+        console.log('Erreur lors de la récupération des données', error);
       }
     );
   }
+  
+  getImageUrl(relativeUrl: string | undefined): string {
+    if(relativeUrl == undefined){
+      return 'assets/defaut.jpg';
+    }
+    return `http://localhost:8080/${relativeUrl}`;
+  }
+  
 
-  onPrivacyChange(): void {
-    // Afficher la valeur actuelle de isPrivate dans la console pour vérification
-    console.log('isPrivate:', this.postForm.get('isPrivate')?.value);
+  updateCharCount() {
+    const contentLength = this.postForm.get('content')?.value.length || 0;
+    this.remainingChars = Math.max(0, 255 - contentLength);
   }
 
   onSubmit(): void {
     if (this.postForm.valid) {
       const postData = this.postForm.value;
-        console.log('niveau 1',postData);
-
-        if (this.isEditMode && this.postId) {
-          this.postService.updatePost(this.postId, postData).subscribe(
-            response => {
-              console.log('niveau 2',response);
-              console.log('Post mis à jour avec succès', response);
-              this.openMediaModal(this.mediaModal);
-            },
-            error => {
-              console.error('Erreur lors de la mise à jour du post', error);
-            }
-          );
-        } else {
-          this.postService.createPost(postData).subscribe(
-            response => {
-              console.log('niveau 2',response);
-              console.log('Post créé avec succès', response);
-              this.createdPostId = response.id;
-              this.openMediaModal(this.mediaModal);
-            },
-            error => {
-              console.error('Erreur lors de la création du post', error);
-            }
-          );
-        }
+      
+      if (this.isEditMode && this.postId) {
+        this.postService.updatePost(this.postId, postData).subscribe(
+          response => {
+            this.alertService.showSuccess("Mise à jour", "Le post a été mis à jours!");
+            this.createdPostId = this.postId; 
+            this.openMediaModal(this.mediaModal);
+          },
+          error => {
+            console.error('Erreur lors de la mise à jour du post', error);
+          }
+        );
+      } else {
+        this.postService.createPost(postData).subscribe(
+          response => {
+            this.alertService.showSuccess("Créer", "Le post a été crée !");
+            this.createdPostId = response.id;
+            this.openMediaModal(this.mediaModal);
+          },
+          error => {
+            console.error('Erreur lors de la création du post', error);
+          }
+        );
+      }
     }
   }
+  
   
 
   openMediaModal(content: any): void {
@@ -124,6 +140,10 @@ export class CreatePostComponent implements OnInit {
     });
   }
 
+  cancelAction(){
+    this.router.navigate(['/profile']);
+  }
+
   annuler() {
     this.modalService.dismissAll();
     this.showMediaModal = false;
@@ -132,40 +152,64 @@ export class CreatePostComponent implements OnInit {
 
   addMediaToPost(): void {
     if (this.createdPostId !== null && this.selectedFiles.length > 0) {
+      const isPrivate = this.postForm.get('private')?.value;
+      
       this.selectedFiles.forEach(file => {
         const formData = new FormData();
         formData.append('file', file);
-
-        const isPrivate = this.postForm.get('isPrivate')?.value;
+        formData.append('isPrivate', isPrivate ? 'true' : 'false');
+  
         if (file.type.startsWith('image/')) {
-          this.postService.addPictureToPost(this.createdPostId as number, isPrivate, formData).subscribe(
+          if(!this.isEditMode){
+            this.postService.addPictureToPost(this.createdPostId as number, isPrivate, formData).subscribe(
             response => {
-              alert('Image ajoutée avec succès');
-              console.log('Image ajoutée avec succès', response);
-              this.router.navigate(['/profile']);
+              this.alertService.showSuccess("Ajout Image", "Image ajoutée avec succès!");
             },
             error => {
               console.error('Erreur lors de l\'ajout de l\'image', error);
             }
-          );
+          ); 
+          }else{
+            this.postService.updatePictureToPost(this.createdPostId as number, isPrivate, formData).subscribe(
+              response => {
+                this.alertService.showSuccess("Mise à jour image", "Image mise à jour !");
+              },
+              error => {
+                console.error('Erreur lors de la mise à jour de l\'image', error);
+              }
+            ); 
+          }
+          
+          
         } else if (file.type.startsWith('video/')) {
-          this.postService.addVideoToPost(this.createdPostId as number,isPrivate, formData).subscribe(
+          if(!this.isEditMode){
+            this.postService.addVideoToPost(this.createdPostId as number,isPrivate, formData).subscribe(
+              response => {
+                this.alertService.showSuccess("Ajout vidéo", "La vidéo a été ajoutée!");
+              },
+              error => {
+                console.error('Erreur lors de l\'ajout de la vidéo', error);
+              }
+            );
+          }else{
+            this.postService.updateVideoToPost(this.createdPostId as number,isPrivate, formData).subscribe(
             response => {
-              alert('Vidéo ajoutée avec succès');
-              console.log('Vidéo ajoutée avec succès', response);
-              this.router.navigate(['/profile']);
+              this.alertService.showSuccess("Mise à jour vidéo", "La vidéo a été mis à jour!");
             },
             error => {
-              console.error('Erreur lors de l\'ajout de la vidéo', error);
+              console.error('Erreur lors de la mise à jour de la vidéo', error);
             }
           );
+          }
+          
         }
       });
   
       this.modalService.dismissAll();
-      this.resetForm();
+      this.router.navigate(['/profile']);
     }
   }
+  
   
 
   resetForm(): void {

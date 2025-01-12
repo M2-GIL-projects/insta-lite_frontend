@@ -44,12 +44,10 @@
 
           
           
-          
-  
           <!-- User Avatar avec icône dropdown -->
           <li class="nav-item dropdown" *ngIf="isLoggedIn$ | async">
             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <img [src]="getImageUrl(currentUser?.profileImg) || 'assets/defaut.jpg'" alt="Avatar" class="rounded-circle me-2" style="width: 40px; height: 40px;">
+              <img [src]="getImageUrl(currentUser?.profileImg) || 'assets/defaut.jpg'" alt="avatar" class="rounded-circle me-2" style="width: 40px; height: 40px;">
               <span> {{ currentUser?.pseudo }}</span>
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">

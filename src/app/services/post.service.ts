@@ -28,6 +28,10 @@ export class PostService {
     return this.http.get<Post[]>(this.apiPublicUrl);
   }
 
+  getPrivatePosts(): Observable<Post[]> {
+    return this.http.get<Post[]>("http://localhost:8080/portfolio/private");
+  }
+
   
 
   getPublicPostsUsers(): Observable<User[]> {
@@ -59,13 +63,22 @@ export class PostService {
     return this.http.post<Post>(this.apiUrl, postData);
   }
 
-  addVideoToPost(id: number, isPrivate: boolean, postData: FormData): Observable<any> {
-    return this.http.post<any>(`${this.addMediaUrl}videos/upload/${id}?isPrivate=${isPrivate}`, postData);
+  addPictureToPost(postId: number, isPrivate: boolean, postData: FormData): Observable<any> {
+    return this.http.post(`${this.addMediaUrl}pictures/upload/${postId}?isPrivate=${isPrivate}`, postData);
+  }
+
+  updatePictureToPost(postId: number, isPrivate: boolean, postData: FormData): Observable<any> {
+    return this.http.put(`${this.addMediaUrl}pictures/update/${postId}?isPrivate=${isPrivate}`, postData);
   }
   
-  addPictureToPost(id: number, isPrivate: boolean, postData: FormData): Observable<any> {
-    return this.http.post<any>(`${this.addMediaUrl}pictures/upload/${id}?isPrivate=${isPrivate}`, postData);
+  addVideoToPost(postId: number, isPrivate: boolean, formData: FormData): Observable<any> {
+    return this.http.post(`${this.addMediaUrl}videos/upload/${postId}?isPrivate=${isPrivate}`, formData);
   }
+
+  updateVideoToPost(postId: number, isPrivate: boolean, formData: FormData): Observable<any> {
+    return this.http.put(`${this.addMediaUrl}videos/update/${postId}?isPrivate=${isPrivate}`, formData);
+  }
+  
   
 
   updatePost(id: number, postData: FormData): Observable<Post> {
@@ -73,24 +86,31 @@ export class PostService {
   }
 
   
-  deletePost(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  deletePost(id: number): Observable<string> {
+    return this.http.delete(`${this.apiUrl}/${id}`, { responseType: 'text' });
   }
 
   togglePostVisibility(id: number, isPublic: boolean): Observable<Post> {
     return this.http.patch<Post>(`${this.apiUrl}/${id}/visibility`, { isPublic });
   }
 
-  addComment(postId: number, comment: { content: string }): Observable<Comment> {
+  addComment(postId: number, comment: string): Observable<Comment> {
     return this.http.post<Comment>(`${this.commentUrl}/add/${postId}`, comment);
   }
 
-  deleteComment(commentId: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${commentId}`);
+  deleteComment(commentId: number): Observable<string> {
+    return this.http.delete(`${this.commentUrl}/${commentId}`, { responseType: 'text' });
   }
 
   likePost(postId: number): Observable<Like> {
     const likeUrl="http://localhost:8080/likes";
     return this.http.post<Like>( `${likeUrl}/${postId}`, {});
   }
+
+  deleteLikePost(postId: number): Observable<string> {
+    const likeUrl = "http://localhost:8080/likes";
+    return this.http.delete(`${likeUrl}/${postId}`, { responseType: 'text' });
+  }
+  
+
 }

@@ -46,9 +46,15 @@ export class HeaderComponent implements OnInit {
       }
     );
   }
+  
   getImageUrl(relativeUrl: string | undefined): string {
+    if(relativeUrl == undefined){
+      return 'assets/defaut.jpg';
+    }
     return `http://localhost:8080/${relativeUrl}`;
   }
+
+  
 
   private handleAuthError() {
     this.authService.logout().subscribe(() => {

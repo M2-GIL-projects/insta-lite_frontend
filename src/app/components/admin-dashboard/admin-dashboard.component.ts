@@ -1,60 +1,44 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
-import { UserService } from '../../services/user.service';
-import { GalleryService } from '../../services/gallery.service';
-import { VideoService } from '../../services/video.service';
-
+import { UserListComponent } from './user-list/user-list.component';
+import { VideoListComponent } from './video-list/video-list.component';
+import { ImageListComponent } from './image-list/image-list.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { AdminService } from '../../services/admin.service';
+import { User } from '../../models/User';
+import { PostListComponent } from './post-list/post-list.component';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    ImageListComponent,
+    VideoListComponent,
+    UserListComponent,
+    DashboardComponent,
+    PostListComponent
+  ],
   templateUrl: './admin-dashboard.component.html',
-  styleUrls: ['./admin-dashboard.component.css']
+  styleUrls: ['./admin-dashboard.component.css'],
 })
 export class AdminDashboardComponent {
   activeTab: string = 'users';
-  users: any[] = [];
-  content: any[] = [];
-  stats: any = {};
-  
-  constructor(
-    private authService: AuthService,
-    private userService: UserService,
-    private galleryService: GalleryService,
-    private videoService: VideoService
-  ) {
-    this.loadUsers();
-    this.loadContent();
-    this.loadStats();
+  users: User[] = [];
+  posts: any[] = [];
+  images: any[] = [];
+
+  constructor(private adminService: AdminService) {
+    this.loadAllUsers();
   }
 
   setActiveTab(tab: string): void {
     this.activeTab = tab;
   }
 
-  private loadUsers(): void {
-    this.userService.getUsers().subscribe(users => {
+  private loadAllUsers(): void {
+    this.adminService.getAllUsers().subscribe((users) => {
       this.users = users;
     });
-  }
-
-  private loadContent(): void {
-    this.galleryService.getImages().subscribe(images => {
-      this.content = [...this.content, ...images];
-    });
-    this.videoService.getVideos().subscribe(videos => {
-      this.content = [...this.content, ...videos];
-    });
-  }
-
-  private loadStats(): void {
-    // Simuler le chargement des statistiques
-    this.stats = {
-      totalUsers: this.users.length,
-      totalContent: this.content.length,
-      publicContent: this.content.filter(item => item.isPublic).length
-    };
   }
 }

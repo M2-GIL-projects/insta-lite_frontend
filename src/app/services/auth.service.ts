@@ -20,22 +20,17 @@ export class AuthService {
 
   private checkInitialLoginState() {
     const token = localStorage.getItem('token');
-    const role = localStorage.getItem('userRole');
+    const role = localStorage.getItem('role');
     this.isLoggedInSubject.next(!!token);
     this.userRoleSubject.next(role);
   }
 
   login(email: string, password: string): Observable<any> {
-    const emailRec = email;
-    if(emailRec =="admin@instalite.fr"){
-      localStorage.setItem('userRole', "ADMIN");
-      this.userRoleSubject.next("ADMIN");
-    }
     return this.http.post(`${this.UserUrl}/login`, { email, password }).pipe(
       tap((response: any) => {
         if (response.token) {
           localStorage.setItem('token', response.token);
-          //localStorage.setItem('userRole', response.role);
+          localStorage.setItem('role', response.role);
           this.isLoggedInSubject.next(true);
           //this.userRoleSubject.next(response.role);
         }
@@ -47,7 +42,7 @@ export class AuthService {
     return this.http.post(`${this.UserUrl}/logout`, {}, { responseType: 'text' }).pipe(
       tap(() => {
         localStorage.removeItem('token');
-        localStorage.removeItem('userRole');
+        localStorage.removeItem('role');
         this.isLoggedInSubject.next(false);
         this.userRoleSubject.next(null);
       })

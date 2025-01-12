@@ -1,0 +1,205 @@
+<div class="container mt-4">
+    <div class="row align-items-center">
+      <!-- Section image de profil -->
+      <div class="col-md-4 text-center">
+        <img
+          [src]="getImageUrl(selectedUser?.profileImg)"
+          class="rounded-circle profile-pic mb-3 img-fluid shadow"
+          alt="Photo de profil de {{ selectedUser?.pseudo }}"
+          style="width: 150px; height: 150px; object-fit: cover"
+        />
+      </div>
+  
+      <!-- Section informations utilisateur -->
+      <div class="col-md-8">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="mb-0 fw-bold">{{ selectedUser?.pseudo }}</h4>
+        </div>
+        <div class="d-flex justify-content-around text-center mb-3">
+            <span><strong>{{ selectedUser ? selectedUser.postCount : currentUser?.postCount }}</strong> Publications</span>
+            <span><strong>0</strong> Abonnés</span>
+            <span><strong>0</strong> Abonnements</span>
+          </div>
+          
+        <p class="text-muted text-break">
+          {{ selectedUser?.bio || "Aucune bio disponible" }}
+        </p>
+      </div>
+    </div>
+  
+    <!-- Navigation des onglets -->
+    <ul class="nav nav-tabs mt-4" id="myTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link active"
+          id="publications-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#publications"
+          type="button"
+          role="tab"
+          aria-controls="publications"
+          aria-selected="true"
+        >
+          <i class="fas fa-th"></i> Tous
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="videos-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#videos"
+          type="button"
+          role="tab"
+          aria-controls="videos"
+          aria-selected="false"
+        >
+          <i class="fas fa-video"></i> Vidéos
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="photos-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#photos"
+          type="button"
+          role="tab"
+          aria-controls="photos"
+          aria-selected="false"
+        >
+          <i class="fas fa-camera"></i> Photos
+        </button>
+      </li>
+    </ul>
+  
+    <!-- Contenu des onglets -->
+    <div *ngIf="currentUser" class="tab-content mt-4">
+      <!-- Tous les posts -->
+      <div
+        class="tab-pane fade show active"
+        id="publications"
+        role="tabpanel"
+        aria-labelledby="publications-tab"
+      >
+      <div class="row">
+        <div *ngFor="let post of posts" class="col-sm-6 col-md-4 mb-4">
+          <div class="card shadow-sm">
+            <!-- Image du post -->
+            <img
+              (click)="voirPost(post.id)"
+              *ngIf="post.pictures && post.pictures.length > 0"
+              [src]="
+                getImageUrl(post.pictures[0].url)
+              "
+              class="card-img-top img-fluid"
+              alt="{{ post.content }}"
+              style="object-fit: cover; height: 200px"
+            />
+            <!-- Vidéo du post -->
+            <video
+            (click)="voirPost(post.id)"
+              *ngIf="post.videos && post.videos.length > 0"
+              [src]="
+                getImageUrl(post.videos[0].url) || 'assets/default-video.mp4'
+              "
+              class="card-img-top img-fluid"
+              preload="metadata"
+              style="object-fit: cover; height: 200px"
+            ></video>
+      
+            <!-- Corps de la carte -->
+            <div class="card-body">
+              <div class="mb-2">
+                <span
+                  class="badge"
+                  [ngClass]="post.private ? 'bg-danger' : 'bg-success'"
+                >
+                  {{ post.private ? 'Privé' : 'Public' }}
+                </span>
+              </div>
+      
+              <!-- Contenu du post -->
+              <p
+                (click)="openModal('publication', post)"
+                class="card-text text-truncate"
+              >
+                {{ post.content }}
+              </p>
+      
+              <!-- Actions -->
+              <div class="d-flex justify-content-between align-items-center">
+                <button class="btn btn-outline-danger btn-sm">
+                  <i class="fas fa-heart"></i> {{ post.likes?.length }}
+                </button>
+                <button class="btn btn-outline-info btn-sm">
+                  <i class="fas fa-comment"></i> {{ post.comments?.length }}
+                </button>
+                <button
+                  (click)="openModal('publication', post)"
+                  class="btn btn-outline-secondary btn-sm"
+                >
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      </div>
+  
+      <!-- Section vidéos uniquement -->
+      <div
+        class="tab-pane fade"
+        id="videos"
+        role="tabpanel"
+        aria-labelledby="videos-tab"
+      >
+        <div class="row mt-4">
+          <div
+            *ngFor="let post of posts"
+            class="col-sm-6 col-md-4 mb-4"
+            (click)="openModal('publication', post)"
+          >
+            <video
+              *ngIf="post.videos && post.videos.length > 0"
+              [src]="
+                getImageUrl(post.videos[0].url) || 'assets/default-video.mp4'
+              "
+              class="gallery-item img-fluid rounded shadow"
+              preload="metadata"
+              style="height: 200px; object-fit: cover"
+            ></video>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Section photos uniquement -->
+      <div
+        class="tab-pane fade"
+        id="photos"
+        role="tabpanel"
+        aria-labelledby="photos-tab"
+      >
+        <div class="row mt-4">
+          <div
+            *ngFor="let post of posts"
+            class="col-sm-6 col-md-4 mb-4"
+            (click)="openModal('publication', post)"
+          >
+            <img
+              *ngIf="post.pictures && post.pictures.length > 0"
+              [src]="
+                getImageUrl(post.pictures[0].url)
+              "
+              class="gallery-item img-fluid rounded shadow"
+              alt="Image de la publication"
+              style="height: 200px; object-fit: cover"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

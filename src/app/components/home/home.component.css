@@ -1,8 +1,8 @@
 .post-media {
     position: relative;
     overflow: hidden;
-    max-height: 400px;
-    margin: 10px 0;
+    max-height: 450px;
+    margin: 1% 0;
   }
   
   .post-media img,
@@ -24,4 +24,18 @@
       max-height: 250px; /* Ajuste la hauteur pour les petits écrans */
     }
   }
+
+  .comments-section {
+    border-top: 1px solid #efefef;
+    padding-top: 8px;
+  }
+  
+  .comment {
+    font-size: 14px;
+  }
+  
+  .comment-content {
+    line-height: 1.2;
+  }
+  
   

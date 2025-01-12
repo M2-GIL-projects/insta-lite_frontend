@@ -7,5 +7,6 @@ export interface User {
     profileImg?: string;
     bio?: string,
     phone?:string,
-    createdAt?: Date
+    createdAt?: Date,
+    postCount?: number;
 }

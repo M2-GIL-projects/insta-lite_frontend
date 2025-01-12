@@ -6,10 +6,10 @@ export interface Picture {
     url: string;
     post: string;
     private: boolean;
-    isPrivate: boolean;
   }
   
   export interface Video {
+    id?:number;
     url: string;
     thumbnail: string;
     extension: string;
@@ -20,6 +20,7 @@ export interface Picture {
   export interface Like {
     id: number;
     post: string;
+    user: User;
   }
   
   export interface Comment {
@@ -27,6 +28,7 @@ export interface Picture {
     post: string;
     content: string;
     createdAt: Date;
+    user: User;
   }
   
   export interface Post {
@@ -38,7 +40,7 @@ export interface Picture {
     likes?: Like[];
     comments?: Comment[];
     createdAt?: Date;
-    isPrivate: boolean;
+    private: boolean;
   }
 
 
