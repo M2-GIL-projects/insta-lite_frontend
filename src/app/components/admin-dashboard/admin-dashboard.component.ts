@@ -7,6 +7,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { AdminService } from '../../services/admin.service';
 import { User } from '../../models/User';
 import { PostListComponent } from './post-list/post-list.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-admin-dashboard',

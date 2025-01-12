@@ -13,7 +13,7 @@
                 data-target="#addPostModal">
                 <i class="fas fa-plus-circle"></i> Créer un post
             </button>
-            <div class="table-responsive">
+            <div class="table-responsive" *ngIf="posts.length > 0; else noUsersTemplate">
                 <table class="table table-striped table-bordered">
                     <thead class="thead-dark">
                         <tr>
@@ -65,3 +65,9 @@
         </div>
     </div>
 </div>
+
+<ng-template #noUsersTemplate>
+    <div class="alert alert-warning text-center" role="alert">
+        Aucune utilisateur disponible. Veuillez ajouter des utilisateurs.
+    </div>
+</ng-template>

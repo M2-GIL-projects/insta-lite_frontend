@@ -1,46 +1,62 @@
-<div class="container mt-3">
-  <div class="card shadow-lg p-4">
-    
-    <div class="card-header bg-info">
-      <h5 class="fw-bold"><i class="fas fa-user-plus"></i> Créer un nouvel utilisateur</h5>
+<div class="container mt-4">
+  <div class="card shadow-lg p-4 border-0 rounded">
+    <!-- En-tête de la carte -->
+    <div class="card-header bg-info text-white text-center rounded-top">
+      <h5 class="fw-bold mb-0">
+        <i class="fas" [ngClass]="isEditMode ? 'fa-user-edit' : 'fa-user-plus'"></i>
+        {{ isEditMode ? "Modifier l'utilisateur" : "Créer un nouvel utilisateur" }}
+      </h5>
     </div>
-  
-    <!-- Formulaire -->
+
+    <!-- Corps du formulaire -->
     <div class="card-body">
-      <p class="text-muted text-center" >Remplissez les informations ci-dessous pour ajouter un utilisateur.</p>
+      <p class="text-muted text-center">
+        Remplissez les informations ci-dessous pour {{ isEditMode ? 'modifier' : 'ajouter' }} un utilisateur.
+      </p>
       <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
-        <div class="mb-3">
-          <label for="pseudo" class="form-label">Pseudo</label>
-          <input
-            type="text"
-            maxlength="5"
-            class="form-control"
-            id="pseudo"
-            formControlName="pseudo"
-            placeholder="Entrez un pseudo"
-            required
-          />
+        <!-- Champ Pseudo -->
+        <div class="mb-4">
+          <label for="pseudo" class="form-label fw-bold">Pseudo</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light">
+              <i class="fas fa-user"></i>
+            </span>
+            <input
+              type="text"
+              maxlength="5"
+              class="form-control"
+              id="pseudo"
+              formControlName="pseudo"
+              placeholder="Entrez un pseudo"
+              required
+            />
+          </div>
           <div
             *ngIf="userForm.get('pseudo')?.invalid && (userForm.get('pseudo')?.dirty || userForm.get('pseudo')?.touched)"
             class="text-danger mt-1"
           >
             <small *ngIf="userForm.get('pseudo')?.errors?.['required']">Le pseudo est requis.</small>
-            <small *ngIf="userForm.get('pseudo')?.errors?.['minlength']">Le pseudo doit dépasser au moins 3 caractères.</small>
+            <small *ngIf="userForm.get('pseudo')?.errors?.['minlength']">Le pseudo doit contenir au moins 3 caractères.</small>
             <small *ngIf="userForm.get('pseudo')?.errors?.['maxlength']">Le pseudo ne doit pas dépasser 5 caractères.</small>
           </div>
         </div>
-  
-        <!-- Email -->
-        <div class="mb-3">
-          <label for="email" class="form-label">Adresse email</label>
-          <input
-            type="email"
-            class="form-control"
-            id="email"
-            formControlName="email"
-            placeholder="exemple@domaine.com"
-            required
-          />
+
+        <!-- Champ Email -->
+        <div class="mb-4">
+          <label for="email" class="form-label fw-bold">Adresse email</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light">
+              <i class="fas fa-envelope"></i>
+            </span>
+            <input
+              type="email"
+              class="form-control"
+              id="email"
+              formControlName="email"
+              placeholder="exemple@domaine.com"
+              required
+            />
+          </div>
           <div
             *ngIf="userForm.get('email')?.invalid && (userForm.get('email')?.dirty || userForm.get('email')?.touched)"
             class="text-danger mt-1"
@@ -49,18 +65,25 @@
             <small *ngIf="userForm.get('email')?.errors?.['email']">L'adresse email n'est pas valide.</small>
           </div>
         </div>
-  
-        <!-- Mot de passe -->
-        <div class="mb-3">
-          <label for="password" class="form-label">Mot de passe</label>
-          <input
-            type="password"
-            class="form-control"
-            id="password"
-            formControlName="password"
-            placeholder="Entrez un mot de passe sécurisé"
-            required
-          />
+
+        <!-- Champ Mot de passe -->
+        <div class="mb-4 position-relative">
+          <label for="password" class="form-label fw-bold">Mot de passe</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light">
+              <i class="fas fa-lock"></i>
+            </span>
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              class="form-control"
+              id="password"
+              formControlName="password"
+              placeholder="{{ isEditMode ? 'Laissez vide pour conserver l\'ancien mot de passe' : 'Entrez un mot de passe sécurisé' }}"
+            />
+            <span class="input-group-text bg-light" (click)="toggleShowPassword()" style="cursor: pointer;">
+              <i class="{{ showPassword ? 'fas fa-eye-slash' : 'fas fa-eye' }}"></i>
+            </span>
+          </div>
           <div
             *ngIf="userForm.get('password')?.invalid && (userForm.get('password')?.dirty || userForm.get('password')?.touched)"
             class="text-danger mt-1"
@@ -69,18 +92,25 @@
             <small *ngIf="userForm.get('password')?.errors?.['minlength']">Le mot de passe doit contenir au moins 8 caractères.</small>
           </div>
         </div>
-  
-        <!-- Confirmation du mot de passe -->
-        <div class="mb-3">
-          <label for="confirmPassword" class="form-label">Confirmer le mot de passe</label>
-          <input
-            type="password"
-            class="form-control"
-            id="confirmPassword"
-            formControlName="confirmPassword"
-            placeholder="Confirmez votre mot de passe"
-            required
-          />
+
+        <!-- Champ Confirmation du mot de passe -->
+        <div class="mb-4 position-relative">
+          <label for="confirmPassword" class="form-label fw-bold">Confirmer le mot de passe</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light">
+              <i class="fas fa-check"></i>
+            </span>
+            <input
+              [type]="showConfirmPassword ? 'text' : 'password'"
+              class="form-control"
+              id="confirmPassword"
+              formControlName="confirmPassword"
+              placeholder="{{ isEditMode ? 'Laissez vide pour conserver l\'ancien mot de passe' : 'Confirmez votre mot de passe' }}"
+            />
+            <span class="input-group-text bg-light" (click)="toggleShowConfirmPassword()" style="cursor: pointer;">
+              <i class="{{ showConfirmPassword ? 'fas fa-eye-slash' : 'fas fa-eye' }}"></i>
+            </span>
+          </div>
           <div
             *ngIf="userForm.get('confirmPassword')?.invalid && (userForm.get('confirmPassword')?.dirty || userForm.get('confirmPassword')?.touched)"
             class="text-danger mt-1"
@@ -94,7 +124,7 @@
             <small>Les mots de passe ne correspondent pas.</small>
           </div>
         </div>
-  
+
         <!-- Bouton -->
         <div class="text-center">
           <button
@@ -102,11 +132,11 @@
             class="btn btn-primary btn-lg px-5"
             [disabled]="!userForm.valid"
           >
-            <i class="fas fa-save"></i> Créer l'utilisateur
+            <i class="{{ isEditMode ? 'fas fa-user-edit' : 'fas fa-save' }}"></i>
+            {{ isEditMode ? "Mettre à jour l'utilisateur" : "Créer l'utilisateur" }}
           </button>
         </div>
       </form>
     </div>
-
   </div>
 </div>

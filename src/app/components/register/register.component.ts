@@ -7,8 +7,9 @@ import {
 } from '@angular/forms';
 import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { User } from '../../models/User';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'app-register',
@@ -19,14 +20,28 @@ import { User } from '../../models/User';
 export class RegisterComponent implements OnInit {
   userForm!: FormGroup;
   existingUsers: any[] = [];
+  isEditMode: boolean = false; 
+  userId : number | null = null;
+  showPassword: boolean = false;
+  showConfirmPassword: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private route :ActivatedRoute,
+    private alertService : AlertService
   ) {}
 
   ngOnInit() {
+    this.route.paramMap.subscribe((params) => {
+      const id = params.get('userId');
+      if (id) {
+        this.userId = +id; 
+        this.isEditMode = true;
+        this.loadUserData(this.userId);
+      }
+    });
     this.userForm = this.formBuilder.group(
       {
         pseudo: [
@@ -56,6 +71,20 @@ export class RegisterComponent implements OnInit {
       ? null
       : { mismatch: true };
   }
+
+
+  loadUserData(userId: number) {
+    this.userService.getUserById(userId).subscribe((user: User) => {
+      this.userForm.patchValue({
+        pseudo: user.pseudo,
+        email: user.email,
+        password: user.password
+      });
+    }, error => {
+      console.error("Erreur lors du chargement des données de l'utilisateur", error);
+    });
+  }
+  
 
   loadExistingUsers() {
     this.userService.getPublicUsers().subscribe((users) => {
@@ -95,17 +124,36 @@ export class RegisterComponent implements OnInit {
         password: this.userForm.get('password')?.value,
         pseudo: this.userForm.get('pseudo')?.value,
       };
-      this.userService.createUser(userData).subscribe(
+
+      if(this.isEditMode && this.userId){
+        this.userService.updateUser(this.userId as number ,userData).subscribe(
+          (response) => {
+            this.alertService.showSuccess("Mise à jour d'utilisateur!", "Utilisateur mis à jour avec succès");
+            this.router.navigate(['/home']);
+          },
+          (error) => {
+            this.alertService.showError("Erreur!", "Erreur lors de la mise à jour de l'utilisateur");
+          }
+        );
+      }else{
+        this.userService.createUser(userData).subscribe(
         (response) => {
-          alert('Utilisateur créé avec succès');
-          console.log('Utilisateur créé avec succès', response);
+          this.alertService.showSuccess("Création d'utilisateur!", "Utilisateur créé avec succès");
           this.router.navigate(['/login']);
         },
         (error) => {
-          alert("Erreur lors de la création de l'utilisateur");
-          console.error("Erreur lors de la création de l'utilisateur", error);
+          this.alertService.showError("Erreur!", "Erreur lors de la création de l'utilisateur");
         }
       );
+      }
     }
+  }
+
+  toggleShowPassword(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  toggleShowConfirmPassword(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
   }
 }

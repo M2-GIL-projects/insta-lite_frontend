@@ -19,8 +19,8 @@ export class AdminService {
   createUser(user: User): Observable<User> {
     return this.http.post<User>(this.adminUrl, user);
   }
-  deleteUser(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.adminUrl}users/${id}`);
+  deleteUser(id: number): Observable<string> {
+    return this.http.delete(`${this.adminUrl}users/${id}`, { responseType: 'text' });
   }
   getUserById(id: number): Observable<User> {
     return this.http.get<User>(`${this.adminUrl}users/${id}`);
@@ -29,7 +29,7 @@ export class AdminService {
     return this.http.put<User>(`${this.adminUrl}users/${id}`, user);
   }
   changeUserRole(id: number, role: string): Observable<User> {
-    return this.http.patch<User>(`${this.adminUrl}users/role/${id}`, { role });
+    return this.http.put<User>(`${this.adminUrl}users/role/${id}`,role);
   }
 
 /**Gestion des posts */
@@ -51,8 +51,8 @@ export class AdminService {
     return this.http.put<Post>(`${this.adminUrl}posts/${id}`, postData);
   }
 
-  deletePost(postId: number): Observable<void> {
-    return this.http.delete<void>(`${this.adminUrl}posts/${postId}`);
+  deletePost(postId: number): Observable<string> {
+    return this.http.delete(`${this.adminUrl}posts/${postId}`, { responseType: 'text' });
   }
   togglePostVisibility(postId: number, isPublic: boolean): Observable<Post> {
     return this.http.patch<Post>(`${this.adminUrl}posts/${postId}/visibility`, { isPublic });
@@ -63,10 +63,16 @@ export class AdminService {
   getAllImages(): Observable<Picture[]> {
     return this.http.get<Picture[]>(`${this.adminUrl}images`);
   }
+  deleteImage(imageId: number): Observable<string> {
+    return this.http.delete(`${this.adminUrl}images/${imageId}`, { responseType: 'text' });
+  }
 
   /**Gestion des Vidéos */
   getAllVideos(): Observable<Video[]> {
     return this.http.get<Video[]>(`${this.adminUrl}videos`);
+  }
+  deleteVideo(videoId: number): Observable<string> {
+    return this.http.delete(`${this.adminUrl}videos/${videoId}`, { responseType: 'text' });
   }
 
   

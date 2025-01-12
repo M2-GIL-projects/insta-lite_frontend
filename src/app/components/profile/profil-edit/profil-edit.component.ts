@@ -14,7 +14,7 @@ import { ReactiveFormsModule } from '@angular/forms';
   styleUrls: ['./profil-edit.component.css'],
 })
 export class ProfilEditComponent implements OnInit {
-  userId: string | null = null;
+  userId?: number | null = null;
   userForm: FormGroup;
   isChangePassword: boolean = false;
   currentProfileImageUrl: string | undefined;
@@ -46,20 +46,22 @@ export class ProfilEditComponent implements OnInit {
   }
 
 
-
   ngOnInit() {
     this.route.paramMap.subscribe((params) => {
-      this.userId = params.get('userId');
-      if (this.userId) {
-        this.loadUserData(this.userId);
+      const userIdString = params.get('userId');
+      if (userIdString) {
+        const userId = Number(userIdString);
+        this.loadUserData(userId);
       }
     });
+  
     this.userForm.get('content')?.valueChanges.subscribe(() => {
       this.updateCharCount();
     });
   }
+  
 
-  loadUserData(userId: string) {
+  loadUserData(userId: number) {
     this.userService.getUserById(+userId).subscribe(
       (user: User) => {
         this.userForm.patchValue({
@@ -109,7 +111,7 @@ export class ProfilEditComponent implements OnInit {
       if (!this.isChangePassword) {
         delete updatedUser.password;
       }
-      this.userService.updateUser(this.userId!, updatedUser).subscribe(
+      this.userService.updateUser(this.userId! , updatedUser).subscribe(
         (response) => {
           console.log('Profil mis à jour avec succès', response);
           this.router.navigate(['/profile']);

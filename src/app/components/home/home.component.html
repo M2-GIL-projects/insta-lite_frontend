@@ -1,7 +1,7 @@
 <div class="container mt-4">
   <div class="row">
     <!-- Section principale des posts -->
-    <div class="col-md-8">
+    <div class="col-md-8" *ngIf="posts.length > 0; else noPostsTemplate">
       <div *ngFor="let post of posts" class="card mb-4 shadow-sm">
         <!-- En-tête du post -->
         <div
@@ -105,8 +105,14 @@
       </div>
     </div>
 
+    <ng-template #noPostsTemplate>
+      <div class="alert alert-warning text-center" role="alert">
+        Aucune publications disponible!
+      </div>
+    </ng-template>
+
     <!-- Section des suggestions -->
-    <div class="col-lg-4">
+    <div class="col-lg-4" *ngIf="suggestions.length > 0">
       <div class="card bg-white rounded shadow-sm">
         <div class="card-header">
           <h5 class="mb-3">
@@ -137,5 +143,7 @@
         </div>
       </div>
     </div>
+  
+
   </div>
 </div>

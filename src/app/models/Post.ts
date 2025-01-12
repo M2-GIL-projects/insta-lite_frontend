@@ -13,7 +13,7 @@ export interface Picture {
     url: string;
     thumbnail: string;
     extension: string;
-    post: string;
+    post?: Post;
     isPrivate: boolean;
   }
   
