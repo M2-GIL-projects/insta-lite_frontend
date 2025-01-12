@@ -10,6 +10,7 @@ import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { Router, RouterLink } from '@angular/router';
 import { ProfilModalComponent } from '../profile/profil-modal/profil-modal.component';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'app-home',
@@ -27,6 +28,7 @@ export class HomeComponent implements OnInit {
     private userService: UserService,
     private authService: AuthService,
     private modalService: NgbModal,
+    private alertService: AlertService,
     private router : Router
   ) {}
 
@@ -113,7 +115,7 @@ export class HomeComponent implements OnInit {
 
   likePost(post: Post): void {
     if (!this.currentUser) {
-      alert('Vous devez être connecté pour liker un post');
+      this.alertService.showError("Action non autorisés!", "Vous devez être connecté pour liker un post");
       this.router.navigate(['/login']);
       return;
     }
@@ -130,7 +132,6 @@ export class HomeComponent implements OnInit {
     
   }
   
-
   dislikePost(post: Post): void {
     this.postService.deleteLikePost(post.id).subscribe(
       (response: string) => {
@@ -150,7 +151,7 @@ export class HomeComponent implements OnInit {
   
   toggleLike(post: Post): void {
     if (!this.currentUser) {
-      alert('Vous devez être connecté pour liker ou disliker un post');
+    this.alertService.showError("Action non autorisée!", "Vous devez être connecté pour liker ou disliker un post!");
       this.router.navigate(['/login']);
       return;
     }
@@ -176,7 +177,7 @@ export class HomeComponent implements OnInit {
 
   openCommentModal(postId: number): void {
     if (!this.currentUser) {
-      alert('Vous devez être connecté pour commenter un post');
+      this.alertService.showError("Action non autoriséé!", "Vous devez être connecté pour commenter un post");  
       this.router.navigate(['/login']);
       return;
     }

@@ -41,7 +41,7 @@ export class ImageListComponent {
 
     openImageModal(imageUrl: string): void {
       this.selectedImageUrl = imageUrl; 
-      const modalRef = this.modalService.open(this.imageModal, { size: 'lg' }); // Ouvre le modal
+      const modalRef = this.modalService.open(this.imageModal, { size: 'lg' }); 
       modalRef.result.then(() => {
         this.selectedImageUrl = null; 
       }, () => {

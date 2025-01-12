@@ -27,7 +27,6 @@
       </div>
     </div>
   
-    <!-- Navigation des onglets -->
     <ul class="nav nav-tabs mt-4" id="myTab" role="tablist">
       <li class="nav-item" role="presentation">
         <button
@@ -73,9 +72,7 @@
       </li>
     </ul>
   
-    <!-- Contenu des onglets -->
     <div *ngIf="currentUser" class="tab-content mt-4">
-      <!-- Tous les posts -->
       <div
         class="tab-pane fade show active"
         id="publications"
@@ -85,7 +82,6 @@
       <div class="row">
         <div *ngFor="let post of posts" class="col-sm-6 col-md-4 mb-4">
           <div class="card shadow-sm">
-            <!-- Image du post -->
             <img
               (click)="voirPost(post.id)"
               *ngIf="post.pictures && post.pictures.length > 0"
@@ -96,7 +92,6 @@
               alt="{{ post.content }}"
               style="object-fit: cover; height: 200px"
             />
-            <!-- Vidéo du post -->
             <video
             (click)="voirPost(post.id)"
               *ngIf="post.videos && post.videos.length > 0"
@@ -108,7 +103,6 @@
               style="object-fit: cover; height: 200px"
             ></video>
       
-            <!-- Corps de la carte -->
             <div class="card-body">
               <div class="mb-2">
                 <span
@@ -118,8 +112,6 @@
                   {{ post.private ? 'Privé' : 'Public' }}
                 </span>
               </div>
-      
-              <!-- Contenu du post -->
               <p
                 (click)="openModal('publication', post)"
                 class="card-text text-truncate"
@@ -127,7 +119,6 @@
                 {{ post.content }}
               </p>
       
-              <!-- Actions -->
               <div class="d-flex justify-content-between align-items-center">
                 <button class="btn btn-outline-danger btn-sm">
                   <i class="fas fa-heart"></i> {{ post.likes?.length }}
@@ -148,8 +139,7 @@
       </div>
       
       </div>
-  
-      <!-- Section vidéos uniquement -->
+
       <div
         class="tab-pane fade"
         id="videos"
@@ -175,7 +165,6 @@
         </div>
       </div>
   
-      <!-- Section photos uniquement -->
       <div
         class="tab-pane fade"
         id="photos"
@@ -200,6 +189,9 @@
           </div>
         </div>
       </div>
+
     </div>
   </div>
+
+
   

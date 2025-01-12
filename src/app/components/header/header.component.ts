@@ -60,8 +60,7 @@ export class HeaderComponent implements OnInit {
     this.authService.logout().subscribe(() => {
       this.currentUser = null;
       localStorage.removeItem('token');
-      // Optionnel : rediriger vers la page de connexion
-      // this.router.navigate(['/login']);
+       this.router.navigate(['/login']);
     });
   }
 
@@ -71,7 +70,7 @@ export class HeaderComponent implements OnInit {
         console.log('Déconnexion réussie:', response);
         this.currentUser = null;
         localStorage.removeItem('token');
-        this.router.navigate(['/home']);
+        this.router.navigate(['']);
       },
       (error) => {
         console.error('Erreur lors de la déconnexion', error);

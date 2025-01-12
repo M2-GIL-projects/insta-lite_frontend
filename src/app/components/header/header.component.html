@@ -1,17 +1,14 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top shadow-sm">
     <div class="container">
-      <!-- Logo avec icône -->
       <a class="navbar-brand d-flex align-items-center" href="#">
         <img src="assets/logo-instagram.png" alt="Logo" class="me-2" style="width: 40px; height: 40px;">
         Insta-Lite
       </a>
   
-      <!-- Toggler pour mobile -->
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
   
-      <!-- Navbar Links -->
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item" *ngIf="!(isLoggedIn$ | async)">
@@ -38,7 +35,7 @@
           <li class="nav-item" *ngIf="(isLoggedIn$ | async ) || !(isLoggedIn$ | async)">
             <a class="nav-link" routerLink="">
               <i class="fas fa-bell fa-fw"></i>
-              <span class="badge bg-danger badge-counter">3+</span>
+             
             </a>
           </li>
 
@@ -53,7 +50,6 @@
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
               <li><a class="dropdown-item" routerLink="/profile"><i class="fas fa-user me-2"></i> Voir Profil</a></li>
               <li><a class="dropdown-item" *ngIf="(isLoggedIn$ | async) && currentUser?.role=='ADMIN' " routerLink="/admin"><i class="fas fa-lock fa-shake me-2"></i> Administration</a></li>
-              <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Paramètres</a></li>
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" (click)="logout()"><i class="fas fa-sign-out-alt me-2"></i> Déconnexion</a></li>
             </ul>

@@ -1,6 +1,5 @@
 <div class="container mt-4">
   <div class="card shadow-sm">
-    <!-- En-tête de la carte -->
     <div
       class="card-header bg-primary text-white d-flex justify-content-between align-items-center"
     >
@@ -10,10 +9,8 @@
       </h2>
     </div>
 
-    <!-- Contenu de la carte -->
     <div class="card-body">
       <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
-        <!-- Champ Contenu -->
         <div class="mb-4">
           <label for="content" class="form-label fw-bold">Contenu</label>
           <textarea
@@ -43,7 +40,6 @@
           </div>
         </div>
 
-        <!-- Champ Privé/Public -->
         <div class="form-check mb-4">
           <input
             type="checkbox"
@@ -56,7 +52,6 @@
           ></label>
         </div>
 
-        <!-- Boutons d'action -->
         <div class="d-flex justify-content-between">
           <button
             type="submit"
@@ -78,38 +73,31 @@
   </div>
 </div>
 
-<!-- Modale pour ajout de médias -->
 <ng-template #mediaModal let-modal>
   <div class="modal-content" style="max-width: 600px; margin: auto;">
-    <!-- En-tête de la modale -->
     <div class="modal-header bg-secondary text-white">
       <h4 class="modal-title">Ajouter des médias au post</h4>
       <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
     </div>
 
-    <!-- Corps de la modale -->
     <div class="modal-body">
-      <!-- Affichage de l'ancienne image si elle existe -->
       <div *ngIf="oldImageUrl" class="mb-3">
         <h5>Ancienne Image :</h5>
         <img [src]="oldImageUrl" class="img-thumbnail shadow-sm mb-2" alt="Ancienne image" style="max-width: 100%; height: auto; max-height: 150px;" />
         <p>Voulez-vous remplacer cette image ?</p>
       </div>
 
-      <!-- Affichage de l'ancienne vidéo si elle existe -->
       <div *ngIf="oldVideoUrl" class="mb-3">
         <h5>Ancienne Vidéo :</h5>
         <video [src]="oldVideoUrl" class="img-thumbnail shadow-sm mb-2" controls style="max-width: 100%; height: auto; max-height: 150px;"></video>
         <p>Voulez-vous remplacer cette vidéo ?</p>
       </div>
 
-      <!-- Entrée pour le téléchargement de fichiers -->
       <div class="mb-3">
         <label for="files" class="form-label fw-bold">Images ou Vidéos</label>
         <input type="file" class="form-control" id="files" (change)="onFilesSelected($event)" accept="image/*,video/*" multiple />
       </div>
 
-      <!-- Aperçu des fichiers -->
       <div class="mb-3" *ngIf="previewUrls.length > 0">
         <h5>Aperçu des fichiers sélectionnés :</h5>
         <div class="row">
@@ -121,7 +109,6 @@
       </div>
     </div>
 
-    <!-- Pied de la modale -->
     <div class="modal-footer">
       <button type="button" class="btn btn-outline-primary" (click)="addMediaToPost()">Ajouter les médias</button>
       <button type="button" class="btn btn-outline-danger" (click)="annuler()">Annuler</button>

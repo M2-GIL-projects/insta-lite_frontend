@@ -8,8 +8,10 @@
           </h5>
         </div>
         <div class="card-body">
+          <div *ngIf="errorMessage" class="alert alert-warning text-center" role="alert">
+           {{errorMessage}}
+          </div>
           <form (ngSubmit)="onSubmit()">
-            <!-- Champ Email -->
             <div class="form-group mb-3">
               <label for="email"><i class="fas fa-envelope"></i> Email</label>
               <input
@@ -22,7 +24,6 @@
               />
             </div>
 
-            <!-- Champ Mot de passe -->
             <div class="form-group mb-3">
               <label for="password"> <i class="fas fa-lock"></i> Mot de passe</label>
               <input
@@ -35,7 +36,6 @@
               />
             </div>
 
-            <!-- Bouton Se connecter -->
             <div class="text-end">
               <button type="submit" class="btn btn-primary mt-1">
                 <i class="fas fa-sign-in-alt"></i> Se connecter

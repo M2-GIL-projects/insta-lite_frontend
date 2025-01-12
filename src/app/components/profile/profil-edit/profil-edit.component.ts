@@ -118,7 +118,6 @@ export class ProfilEditComponent implements OnInit {
         },
         (error) => {
           console.error('Erreur lors de la mise à jour du profil', error);
-          // Afficher un message d'erreur
         }
       );
     }

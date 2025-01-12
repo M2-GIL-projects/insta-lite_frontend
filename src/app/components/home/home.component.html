@@ -1,9 +1,8 @@
-<div class="container mt-4">
+<div class="container mt-2">
   <div class="row">
-    <!-- Section principale des posts -->
     <div class="col-md-8" *ngIf="posts.length > 0; else noPostsTemplate">
       <div *ngFor="let post of posts" class="card mb-4 shadow-sm">
-        <!-- En-tête du post -->
+     
         <div
           style="cursor: pointer"
           (click)="voirUser(post.user.id)"
@@ -20,7 +19,7 @@
           <span class="ms-2 fw-bold">{{ post.user.pseudo }}</span>
         </div>
 
-        <!-- Média du post (image ou vidéo) -->
+        
         <div (click)="voirPost(post.id)" class="post-media">
           <img
             *ngIf="post.pictures && post.pictures.length > 0"
@@ -36,7 +35,7 @@
           ></video>
         </div>
 
-        <!-- Corps du post -->
+
         <div class="card-body">
           <p (click)="openHomeModal('publication', post)">{{ post.content }}</p>
           <div class="d-flex align-items-center mb-3">
@@ -92,13 +91,11 @@
                   </p>
                   <small class="text-muted">
                     {{ comment.createdAt | date : "shortDate" }}
-                    <!-- Ajoutez un lien pour répondre si nécessaire -->
                     <a style="cursor: pointer;" (click)="voirPost(post.id)" class="ms-2 text-muted">Répondre</a>
                   </small>
                 </div>
               </div>
             </div>
-            <!-- Ajoutez un lien pour voir plus de commentaires si nécessaire -->
             <a (click)="voirPost(post.id)" class="text-muted" *ngIf="post.comments && post.comments.length > 2">Voir tous les commentaires</a>
           </div>
         </div>

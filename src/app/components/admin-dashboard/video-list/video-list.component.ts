@@ -1,9 +1,9 @@
 import { Component, ViewChild } from '@angular/core';
 import { AdminService } from '../../../services/admin.service';
-import { Router } from '@angular/router';
 import { Video } from '../../../models/Post';
 import { CommonModule } from '@angular/common';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AlertService } from '../../../services/alert.service';
 
 
 @Component({
@@ -18,7 +18,7 @@ export class VideoListComponent {
   @ViewChild('imageModal') imageModal: any;
     
     constructor(
-      private adminService: AdminService,private modalService: NgbModal
+      private adminService: AdminService,private modalService: NgbModal, private alertService: AlertService
     ) {
       this.loadAllVideos();
     }
@@ -37,14 +37,39 @@ export class VideoListComponent {
     }
   
 
-    openImageModal(videoUrl: string): void {
+    openVideoModal(videoUrl: string): void {
       this.selectedVideoUrl = videoUrl; 
-      const modalRef = this.modalService.open(this.imageModal, { size: 'lg' }); // Ouvre le modal
+      const modalRef = this.modalService.open(this.imageModal, { size: 'lg' }); 
       modalRef.result.then(() => {
         this.selectedVideoUrl = null; 
       }, () => {
         this.selectedVideoUrl = null; 
       });
+    }
+
+    onDeleteVideo(videoId: number) {
+      if (videoId) {
+        this.alertService.confirmDelete("Êtes-vous sûr de vouloir supprimer cette vidéo ?")
+          .then((confirmed) => {
+            if (confirmed) {
+              this.adminService.deleteVideo(videoId).subscribe(
+                (response) => {
+                  this.loadAllVideos();
+                  this.alertService.showSuccess("Suppression !", "Vidéo supprimée avec succès !");
+                  
+                },
+                (error) => {
+                  this.alertService.showError("Erreur !", "Une erreur s'est produite lors de la suppression de la Vidéo.");
+                  console.error("Erreur lors de la suppression de                                                                                                                                                                                                   l'image :", error);
+                }
+              );
+            } else {
+              console.log("L'utilisateur a annulé la suppression.");
+            }
+          });
+      } else {
+        console.warn("Aucun ID de post fourni pour la suppression.");
+      }
     }
 
 }

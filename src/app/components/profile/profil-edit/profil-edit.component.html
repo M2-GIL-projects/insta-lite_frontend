@@ -1,14 +1,11 @@
 <div class="container mt-4 mb-5">
   <div class="card shadow-sm">
-    <!-- En-tête de la carte -->
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
       <h3 class="mb-0"><i class="fas fa-user-edit me-2"></i>Modifier le profil</h3>
     </div>
 
-    <!-- Contenu de la carte -->
     <div class="card-body">
       <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
-        <!-- Photo de profil -->
         <div class="mb-4 text-center">
           <label for="profilePic" class="form-label fw-bold d-block">
             <i class="fas fa-camera me-2"></i>Photo de profil
@@ -30,8 +27,6 @@
             />
           </div>
         </div>
-
-        <!-- Nom d'utilisateur -->
         <div class="mb-4">
           <label for="pseudo" class="form-label fw-bold">
             <i class="fas fa-user me-2"></i>Nom d'utilisateur
@@ -50,7 +45,6 @@
           </div>
         </div>
 
-        <!-- Biographie -->
         <div class="mb-4">
           <label for="bio" class="form-label fw-bold">
             <i class="fas fa-info-circle me-2"></i>Biographie
@@ -68,7 +62,6 @@
           </div>
         </div>
 
-        <!-- Email -->
         <div class="mb-4">
           <label for="email" class="form-label fw-bold">
             <i class="fas fa-envelope me-2"></i>Email
@@ -83,7 +76,6 @@
           />
         </div>
 
-        <!-- Téléphone -->
         <div class="mb-4">
           <label for="phone" class="form-label fw-bold">
             <i class="fas fa-phone me-2"></i>Téléphone
@@ -100,7 +92,6 @@
           </div>
         </div>
 
-        <!-- Changer le mot de passe -->
         <div class="mb-4 form-check">
           <input
             type="checkbox"
@@ -113,7 +104,6 @@
           </label>
         </div>
 
-        <!-- Nouveau mot de passe -->
         <div *ngIf="isChangePassword">
           <div class="mb-4">
             <label for="password" class="form-label fw-bold">
@@ -148,7 +138,6 @@
           </div>
         </div>
 
-        <!-- Boutons d'enregistrement et d'annulation -->
         <div class="d-flex gap-2 mt-4">
           <button type="submit" class="btn btn-primary w-100" [disabled]="!userForm.valid">
             <i class="fas fa-save me-2"></i>Enregistrer les modifications

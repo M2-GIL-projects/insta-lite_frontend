@@ -1,6 +1,5 @@
 <div class="container mt-4">
   <div class="row align-items-center">
-    <!-- Section image de profil -->
     <div class="col-md-4 text-center">
       <img
         [src]="getImageUrl(currentUser?.profileImg)"
@@ -10,7 +9,6 @@
       />
     </div>
 
-    <!-- Section informations utilisateur -->
     <div class="col-md-8">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h4 class="mb-0 fw-bold">{{ currentUser?.pseudo }}</h4>
@@ -39,7 +37,6 @@
     </div>
   </div>
 
-  <!-- Navigation des onglets -->
   <ul class="nav nav-tabs mt-4" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
       <button
@@ -85,8 +82,7 @@
     </li>
   </ul>
 
-  <!-- Contenu des onglets -->
-  <div class="tab-content mt-4">
+  <div class="tab-content mt-4" *ngIf="posts.length > 0; else noPostsTemplate"  >
     <!-- Tous les posts -->
     <div
       class="tab-pane fade show active"
@@ -225,4 +221,10 @@
       </div>
     </div>
   </div>
+
+  <ng-template #noPostsTemplate>
+    <div class="alert alert-warning text-center" role="alert">
+      Aucune publications disponible!
+    </div>
+  </ng-template>
 </div>

@@ -22,9 +22,10 @@ export class LoginComponent {
       (response) => {
         localStorage.setItem('token', response.token);
         console.log('Connexion réussie :', response);
-        this.router.navigate(['/home']);
+        this.router.navigate(['']);
       },
       (error) => {
+        
         console.error('Erreur de connexion :', error);
         this.errorMessage = 'Email ou mot de passe incorrect.';
       }

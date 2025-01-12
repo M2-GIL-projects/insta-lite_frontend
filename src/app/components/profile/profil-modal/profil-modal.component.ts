@@ -6,6 +6,7 @@ import { User } from '../../../models/User';
 import { PostService } from '../../../services/post.service';
 import { Comment } from '../../../models/Post';
 import { Router } from '@angular/router';
+import { AlertService } from '../../../services/alert.service';
 
 @Component({
   selector: 'app-profil-modal',
@@ -25,7 +26,8 @@ export class ProfilModalComponent {
   constructor(
     public activeModal: NgbActiveModal,
     private postService: PostService,
-    private router : Router
+    private router : Router,
+    private alertService : AlertService
   ) {}
 
   getImageUrl(relativeUrl: string | undefined): string {
@@ -49,10 +51,8 @@ export class ProfilModalComponent {
       if (confirmDelete) {
         this.postService.deleteComment(commentId).subscribe(
           () => {
-            alert('Commentaire supprimé avec succès');
-            // Mettre à jour l'affichage local
+            this.alertService.showSuccess("Suppression", "Commentaire supprimé avec succès!");
             this.item.comments = this.item.comments;
-            console.log('Commentaire supprimé avec succès');
           },
           (error) => {
             console.error(

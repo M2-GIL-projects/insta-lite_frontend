@@ -9,7 +9,7 @@ export interface Picture {
   }
   
   export interface Video {
-    id?:number;
+    id:number;
     url: string;
     thumbnail: string;
     extension: string;

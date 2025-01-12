@@ -1,6 +1,5 @@
 <div class="container mt-4">
   <div class="card shadow-lg p-4 border-0 rounded">
-    <!-- En-tête de la carte -->
     <div class="card-header bg-info text-white text-center rounded-top">
       <h5 class="fw-bold mb-0">
         <i class="fas" [ngClass]="isEditMode ? 'fa-user-edit' : 'fa-user-plus'"></i>
@@ -8,13 +7,11 @@
       </h5>
     </div>
 
-    <!-- Corps du formulaire -->
     <div class="card-body">
       <p class="text-muted text-center">
         Remplissez les informations ci-dessous pour {{ isEditMode ? 'modifier' : 'ajouter' }} un utilisateur.
       </p>
       <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
-        <!-- Champ Pseudo -->
         <div class="mb-4">
           <label for="pseudo" class="form-label fw-bold">Pseudo</label>
           <div class="input-group">
@@ -41,7 +38,6 @@
           </div>
         </div>
 
-        <!-- Champ Email -->
         <div class="mb-4">
           <label for="email" class="form-label fw-bold">Adresse email</label>
           <div class="input-group">
@@ -66,7 +62,6 @@
           </div>
         </div>
 
-        <!-- Champ Mot de passe -->
         <div class="mb-4 position-relative">
           <label for="password" class="form-label fw-bold">Mot de passe</label>
           <div class="input-group">
@@ -93,7 +88,6 @@
           </div>
         </div>
 
-        <!-- Champ Confirmation du mot de passe -->
         <div class="mb-4 position-relative">
           <label for="confirmPassword" class="form-label fw-bold">Confirmer le mot de passe</label>
           <div class="input-group">
@@ -125,7 +119,6 @@
           </div>
         </div>
 
-        <!-- Bouton -->
         <div class="text-center">
           <button
             type="submit"

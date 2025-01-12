@@ -134,8 +134,7 @@ export class CreatePostComponent implements OnInit {
         };
         reader.readAsDataURL(file);
       } else if (file.type.startsWith('video/')) {
-        // Pour les vidéos, on peut afficher une vignette par défaut ou la première frame
-        this.previewUrls.push('assets/video-thumbnail.png');
+        this.previewUrls.push('assets/defaut-video.png');                                                                                                                                                          
       }
     });
   }
@@ -218,7 +217,7 @@ export class CreatePostComponent implements OnInit {
     this.previewUrls = [];
     this.createdPostId = null;
     this.showMediaModal = false;
-    this.isEditMode = false; // Reset edit mode after submission
+    this.isEditMode = false; 
     this.postId = null; 
   }
 }
