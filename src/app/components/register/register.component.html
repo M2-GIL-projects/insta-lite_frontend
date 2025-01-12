@@ -1,0 +1,135 @@
+<div class="container mt-4">
+  <div class="card shadow-lg p-4 border-0 rounded">
+    <div class="card-header bg-info text-white text-center rounded-top">
+      <h5 class="fw-bold mb-0">
+        <i class="fas" [ngClass]="isEditMode ? 'fa-user-edit' : 'fa-user-plus'"></i>
+        {{ isEditMode ? "Modifier l'utilisateur" : "Créer un nouvel utilisateur" }}
+      </h5>
+    </div>
+
+    <div class="card-body">
+      <p class="text-muted text-center">
+        Remplissez les informations ci-dessous pour {{ isEditMode ? 'modifier' : 'ajouter' }} un utilisateur.
+      </p>
+      <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+        <div class="mb-4">
+          <label for="pseudo" class="form-label fw-bold">Pseudo</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light">
+              <i class="fas fa-user"></i>
+            </span>
+            <input
+              type="text"
+              maxlength="5"
+              class="form-control"
+              id="pseudo"
+              formControlName="pseudo"
+              placeholder="Entrez un pseudo"
+              required
+            />
+          </div>
+          <div
+            *ngIf="userForm.get('pseudo')?.invalid && (userForm.get('pseudo')?.dirty || userForm.get('pseudo')?.touched)"
+            class="text-danger mt-1"
+          >
+            <small *ngIf="userForm.get('pseudo')?.errors?.['required']">Le pseudo est requis.</small>
+            <small *ngIf="userForm.get('pseudo')?.errors?.['minlength']">Le pseudo doit contenir au moins 3 caractères.</small>
+            <small *ngIf="userForm.get('pseudo')?.errors?.['maxlength']">Le pseudo ne doit pas dépasser 5 caractères.</small>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label for="email" class="form-label fw-bold">Adresse email</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light">
+              <i class="fas fa-envelope"></i>
+            </span>
+            <input
+              type="email"
+              class="form-control"
+              id="email"
+              formControlName="email"
+              placeholder="exemple@domaine.com"
+              required
+            />
+          </div>
+          <div
+            *ngIf="userForm.get('email')?.invalid && (userForm.get('email')?.dirty || userForm.get('email')?.touched)"
+            class="text-danger mt-1"
+          >
+            <small *ngIf="userForm.get('email')?.errors?.['required']">L'adresse email est requise.</small>
+            <small *ngIf="userForm.get('email')?.errors?.['email']">L'adresse email n'est pas valide.</small>
+          </div>
+        </div>
+
+        <div class="mb-4 position-relative">
+          <label for="password" class="form-label fw-bold">Mot de passe</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light">
+              <i class="fas fa-lock"></i>
+            </span>
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              class="form-control"
+              id="password"
+              formControlName="password"
+              placeholder="{{ isEditMode ? 'Laissez vide pour conserver l\'ancien mot de passe' : 'Entrez un mot de passe sécurisé' }}"
+            />
+            <span class="input-group-text bg-light" (click)="toggleShowPassword()" style="cursor: pointer;">
+              <i class="{{ showPassword ? 'fas fa-eye-slash' : 'fas fa-eye' }}"></i>
+            </span>
+          </div>
+          <div
+            *ngIf="userForm.get('password')?.invalid && (userForm.get('password')?.dirty || userForm.get('password')?.touched)"
+            class="text-danger mt-1"
+          >
+            <small *ngIf="userForm.get('password')?.errors?.['required']">Le mot de passe est requis.</small>
+            <small *ngIf="userForm.get('password')?.errors?.['minlength']">Le mot de passe doit contenir au moins 8 caractères.</small>
+          </div>
+        </div>
+
+        <div class="mb-4 position-relative">
+          <label for="confirmPassword" class="form-label fw-bold">Confirmer le mot de passe</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light">
+              <i class="fas fa-check"></i>
+            </span>
+            <input
+              [type]="showConfirmPassword ? 'text' : 'password'"
+              class="form-control"
+              id="confirmPassword"
+              formControlName="confirmPassword"
+              placeholder="{{ isEditMode ? 'Laissez vide pour conserver l\'ancien mot de passe' : 'Confirmez votre mot de passe' }}"
+            />
+            <span class="input-group-text bg-light" (click)="toggleShowConfirmPassword()" style="cursor: pointer;">
+              <i class="{{ showConfirmPassword ? 'fas fa-eye-slash' : 'fas fa-eye' }}"></i>
+            </span>
+          </div>
+          <div
+            *ngIf="userForm.get('confirmPassword')?.invalid && (userForm.get('confirmPassword')?.dirty || userForm.get('confirmPassword')?.touched)"
+            class="text-danger mt-1"
+          >
+            <small *ngIf="userForm.get('confirmPassword')?.errors?.['required']">La confirmation du mot de passe est requise.</small>
+          </div>
+          <div
+            *ngIf="userForm.errors?.['mismatch'] && (userForm.get('confirmPassword')?.dirty || userForm.get('confirmPassword')?.touched)"
+            class="text-danger mt-1"
+          >
+            <small>Les mots de passe ne correspondent pas.</small>
+          </div>
+        </div>
+
+        <div class="text-center">
+          <button
+            type="submit"
+            class="btn btn-primary btn-lg px-5"
+            [disabled]="!userForm.valid"
+          >
+            <i class="{{ isEditMode ? 'fas fa-user-edit' : 'fas fa-save' }}"></i>
+            {{ isEditMode ? "Mettre à jour l'utilisateur" : "Créer l'utilisateur" }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

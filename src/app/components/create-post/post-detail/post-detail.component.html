@@ -1,0 +1,81 @@
+<div class="post-details container mt-2 mb-4" *ngIf="post">
+    <div class="card shadow-sm">
+      <div class="card-header d-flex justify-content-between align-items-center bg-light">
+        <div class="user-info d-flex align-items-center">
+          <img [src]="getImageUrl(post.user.profileImg)" 
+               class="rounded-circle me-2 border" 
+               width="50" 
+               height="50" 
+               alt="User avatar">
+          <span class="fw-bold">{{ post.user.pseudo }}</span>
+        </div>
+        <small class="text-muted">{{ post.createdAt | date: 'medium' }}</small>
+      </div>
+  
+      <div class="card-body">
+        <div class="media-container text-center mb-3">
+          <img *ngIf="post.pictures && post.pictures.length > 0"
+               [src]="getImageUrl(post.pictures[0].url)" 
+               class="img-fluid rounded shadow-sm" 
+               style="width: 100%; max-height: 450px; object-fit: contain;" 
+               alt="Post image">
+          
+          <video *ngIf="post.videos && post.videos.length > 0"
+                 [src]="getImageUrl(post.videos[0].url)" 
+                 controls 
+                 class="w-100 rounded shadow-sm"
+                 style="max-height: 400px;">
+          </video>
+        </div>
+        <p class="mt-3 text-secondary">{{ post.content }}</p>
+      </div>
+  
+      <div class="card-footer bg-light d-flex justify-content-start">
+        <button (click)="toggleLike()" class="btn btn-outline-danger me-2">
+          <i class="fas" [ngClass]="{'fa-heart': isLiked, 'fa-heart-o': !isLiked}"></i>
+          {{ post.likes?.length || 0 }}
+        </button>
+        <button class="btn btn-outline-secondary">
+          <i class="fas fa-comment"></i> Commenter
+        </button>
+      </div>
+    </div>
+  
+    <div class="comments-section mt-4">
+      <h5>
+        <i class="fas fa-comments me-2"></i> Commentaires ({{ post.comments?.length || 0 }})
+      </h5>
+      <div *ngFor="let comment of post?.comments" class="comment mb-3 border-bottom pb-2">
+        <div class="d-flex">
+          <img [src]="getImageUrl(comment?.user?.profileImg)" 
+               class="rounded-circle me-2 border" 
+               width="40" 
+               height="40" 
+               alt="User avatar">
+          <div>
+            <p class="mb-0">
+              <strong>{{ comment?.user?.pseudo }}</strong> {{ comment?.content }}
+            </p>
+            <small class="text-muted">
+              <i class="far fa-clock me-1"></i>{{ comment?.createdAt | date: 'short' }}
+            </small>
+          </div>
+        </div>
+      </div>
+  
+      <form *ngIf="currentUser" (ngSubmit)="addComment()" class="mt-3">
+        <div class="input-group">
+          <input type="text" 
+                 class="form-control" 
+                 placeholder="Ajouter un commentaire..." 
+                 [(ngModel)]="newComment" 
+                 name="newComment" 
+                 required>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-paper-plane me-1"></i>Publier
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  

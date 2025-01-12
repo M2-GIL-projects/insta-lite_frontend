@@ -1,0 +1,76 @@
+<div id="users" class="container mt-2">
+  <!-- Gestion des images -->
+  <div id="images" class="card shadow mb-4">
+    <div class="card-header bg-info text-white d-flex align-items-center">
+      <h2 class="m-0"><i class="fas fa-images"></i> Gestion des images</h2>
+    </div>
+    <div class="card-body">
+      <table class="table table-striped" *ngIf="images.length > 0; else noImagesTemplate">
+        <thead class="thead-dark">
+          <tr>
+            <th>ID</th>
+            <th>Preview</th>
+            <th>Visibilité</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let image of images">
+            <td>{{ image.id }}</td>
+            <td>
+              <img
+                [src]="getImageUrl(image.url)"
+                alt="image"
+                class="rounded-circle me-2"
+                style="width: 40px; height: 40px"
+                (click)="openImageModal(getImageUrl(image.url))"
+              />
+            </td>
+            <td>{{ image.private ? "Privé" : "Public" }}</td>
+            <td>
+              <button (click)="onDeleteImage(image.id)" class="btn btn-sm btn-danger me-1">
+                <i class="fas fa-trash"></i>
+              </button>
+              <button (click)="openImageModal(getImageUrl(image.url))" class="btn btn-sm btn-info me-1">
+                <i class="fas fa-eye"></i>
+              </button>
+              <a [href]="getImageUrl(image.url)">
+                <button class="btn btn-sm btn-success me-1">
+                  <i class="fas fa-download"></i>
+                </button>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+
+      <ng-template #noImagesTemplate>
+        <div class="alert alert-warning text-center" role="alert">
+          Aucune image disponible. Veuillez ajouter des images.
+        </div>
+      </ng-template>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- Modale pour afficher l'image en grand -->
+<ng-template #imageModal let-modal>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">Aperçu de l'image</h5>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <img [src]="selectedImageUrl" class="img-fluid w-100"
+      alt="image"
+       />
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Close click')">Fermer</button>
+      <a [href]="selectedImageUrl" download class="btn btn-primary">Télécharger l'image</a>
+    </div>
+  </div>
+</ng-template>

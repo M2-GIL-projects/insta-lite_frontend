@@ -1,0 +1,16 @@
+.profile-pic {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+}
+.gallery-item {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+}
+.nav-tabs .nav-link {
+    color: #495057;
+}
+.nav-tabs .nav-link.active {
+    font-weight: bold;
+}
