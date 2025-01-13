@@ -40,7 +40,7 @@
           </div>
         </div>
 
-        <div class="form-check mb-4">
+        <div class="form-check mb-4" *ngIf="currentUser?.role !== 'USER'">
           <input
             type="checkbox"
             class="form-check-input"

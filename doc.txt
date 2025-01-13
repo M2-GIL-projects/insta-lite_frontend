@@ -1,4 +1,4 @@
 {
     "email": "admin@instalite.fr",
-    "password": "       "
+    "password": "UtoPique#LIG5202"
 }

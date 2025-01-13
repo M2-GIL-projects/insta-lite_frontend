@@ -12,6 +12,7 @@ import { Router, RouterLink } from '@angular/router';
 import { ProfilModalComponent } from '../profile/profil-modal/profil-modal.component';
 import { AlertService } from '../../services/alert.service';
 import { forkJoin } from 'rxjs';
+import { WebSocketService } from '../../services/web-socket.service';
 
 @Component({
   selector: 'app-home',
@@ -26,6 +27,7 @@ export class HomeComponent implements OnInit {
   currentUser: User | null = null;
 
   constructor(
+    private webSocketService: WebSocketService,
     private postService: PostService,
     private userService: UserService,
     private authService: AuthService,
@@ -140,6 +142,15 @@ export class HomeComponent implements OnInit {
     });
   }
   
+ /* listenForNewPosts(): void {
+    this.webSocketService.listen('newPost').subscribe((newPost: Post) => {
+      this.posts.unshift(newPost); // Ajouter le nouveau post en haut de la liste
+    });
+
+    this.webSocketService.listen('initialPosts').subscribe((initialPosts: Post[]) => {
+      this.posts = initialPosts;
+    });
+  }*/
   
   voirPost(postId: number | undefined): void {
     if (postId !== undefined) {
@@ -275,3 +286,6 @@ export class HomeComponent implements OnInit {
     );
   }
 }
+
+
+

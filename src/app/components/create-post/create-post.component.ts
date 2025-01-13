@@ -6,6 +6,10 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Post } from '../../models/Post';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from '../../services/alert.service';
+import { AuthService } from '../../services/auth.service';
+import { UserService } from '../../services/user.service';
+import { User } from '../../models/User';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-create-post',
@@ -31,18 +35,24 @@ export class CreatePostComponent implements OnInit {
   oldImageId: number | null = null;
   oldVideoId: number | null = null;
 
+  currentUser: User | null = null;
+  isLoggedIn$: Observable<boolean>;
+
   constructor(
     private fb: FormBuilder, 
     private postService: PostService,
     private modalService: NgbModal,
     private route: ActivatedRoute,
     private router: Router,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private authService : AuthService,
+    private userService : UserService
   ) {
     this.postForm = this.fb.group({
       content: ['', [Validators.required, Validators.maxLength(255)]],
       private: [false]
     });
+    this.isLoggedIn$ = this.authService.isLoggedIn$;
   }
 
   ngOnInit() {
@@ -54,9 +64,29 @@ export class CreatePostComponent implements OnInit {
         this.loadPostData(this.postId);
       }
     });
+
+    this.isLoggedIn$.subscribe(loggedIn => {
+      if (loggedIn) {
+        this.loadUser();
+      } else {
+        this.currentUser = null;
+      }
+    });
+
     this.postForm.get('content')?.valueChanges.subscribe(() => {
       this.updateCharCount();
     });
+  }
+
+  loadUser() {
+    this.userService.getMe().subscribe(
+      user => {
+        this.currentUser = user;
+      },
+      error => {
+        console.log('Erreur lors du chargement de l\'utilisateur', error);
+      }
+    );
   }
 
   loadPostData(postId: number) {
