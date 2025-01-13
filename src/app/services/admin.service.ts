@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { User } from '../models/User';
-import { Observable } from 'rxjs';
+import { finalize, Observable } from 'rxjs';
 import { Picture, Post, Video } from '../models/Post';
+import { ProgressService } from './progress.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,68 +12,153 @@ export class AdminService {
 
   private adminUrl = 'http://localhost:8080/admin/';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private progressService: ProgressService) {}
 
   getAllUsers(): Observable<User[]> {
-    return this.http.get<User[]>(`${this.adminUrl}users`);
+    this.progressService.show();
+    return this.http.get<User[]>(`${this.adminUrl}users`).pipe(
+          finalize(() => {
+            this.progressService.hide();
+          })
+        );
   }
   createUser(user: User): Observable<User> {
-    return this.http.post<User>(this.adminUrl, user);
+    this.progressService.show();
+    return this.http.post<User>(this.adminUrl, user).pipe(
+          finalize(() => {
+            this.progressService.hide();
+          })
+        );
   }
   deleteUser(id: number): Observable<string> {
-    return this.http.delete(`${this.adminUrl}users/${id}`, { responseType: 'text' });
+    this.progressService.show();
+    return this.http.delete(`${this.adminUrl}users/${id}`, { responseType: 'text' }).pipe(
+          finalize(() => {
+            this.progressService.hide();
+          })
+        );
   }
   getUserById(id: number): Observable<User> {
-    return this.http.get<User>(`${this.adminUrl}users/${id}`);
+    this.progressService.show();
+    return this.http.get<User>(`${this.adminUrl}users/${id}`).pipe(
+          finalize(() => {
+            this.progressService.hide();
+          })
+        );
   }
   updateUser(id: number, user: User): Observable<User> {
-    return this.http.put<User>(`${this.adminUrl}users/${id}`, user);
+    this.progressService.show();
+    return this.http.put<User>(`${this.adminUrl}users/${id}`, user).pipe(
+          finalize(() => {
+            this.progressService.hide();
+          })
+        );
   }
   changeUserRole(id: number, role: string): Observable<User> {
-    return this.http.put<User>(`${this.adminUrl}users/role/${id}`,role);
+    this.progressService.show();
+    return this.http.put<User>(`${this.adminUrl}users/role/${id}`,role).pipe(
+          finalize(() => {
+            this.progressService.hide();
+          })
+        );
   }
 
 /**Gestion des posts */
   getAllPosts(): Observable<Post[]> {
-    return this.http.get<Post[]>(`${this.adminUrl}posts`);
+    this.progressService.show();
+    return this.http.get<Post[]>(`${this.adminUrl}posts`).pipe(
+          finalize(() => {
+            this.progressService.hide();
+          })
+        );
   }
   createPost(postData: FormData): Observable<Post> {
-    return this.http.post<Post>(`${this.adminUrl}posts`, postData);
+    this.progressService.show();
+    return this.http.post<Post>(`${this.adminUrl}posts`, postData).pipe(
+          finalize(() => {
+            this.progressService.hide();
+          })
+        );
   }
   addVideoToPost(postId: number, isPrivate: boolean, postData: FormData): Observable<any> {
-    return this.http.post<any>(`${this.adminUrl}videos/upload/${postId}?isPrivate=${isPrivate}`, postData);
+    this.progressService.show();
+    return this.http.post<any>(`${this.adminUrl}videos/upload/${postId}?isPrivate=${isPrivate}`, postData).pipe(
+          finalize(() => {
+            this.progressService.hide();
+          })
+        );
   }
 
   addPictureToPost(postId: number, isPrivate: boolean, postData: FormData): Observable<any> {
-    return this.http.post<any>(`${this.adminUrl}pictures/upload/${postId}?isPrivate=${isPrivate}`, postData);
+    this.progressService.show();
+    return this.http.post<any>(`${this.adminUrl}pictures/upload/${postId}?isPrivate=${isPrivate}`, postData).pipe(
+          finalize(() => {
+            this.progressService.hide();
+          })
+        );
   }
 
   updatePost(id: number, postData: FormData): Observable<Post> {
-    return this.http.put<Post>(`${this.adminUrl}posts/${id}`, postData);
+    this.progressService.show();
+    return this.http.put<Post>(`${this.adminUrl}posts/${id}`, postData).pipe(
+          finalize(() => {
+            this.progressService.hide();
+          })
+        );
   }
 
   deletePost(postId: number): Observable<string> {
-    return this.http.delete(`${this.adminUrl}posts/${postId}`, { responseType: 'text' });
+    this.progressService.show();
+    return this.http.delete(`${this.adminUrl}posts/${postId}`, { responseType: 'text' }).pipe(
+          finalize(() => {
+            this.progressService.hide();
+          })
+        );
   }
   togglePostVisibility(postId: number, isPublic: boolean): Observable<Post> {
-    return this.http.patch<Post>(`${this.adminUrl}posts/${postId}/visibility`, { isPublic });
+    this.progressService.show();
+    return this.http.patch<Post>(`${this.adminUrl}posts/${postId}/visibility`, { isPublic }).pipe(
+          finalize(() => {
+            this.progressService.hide();
+          })
+        );
   }
 
 
   /**Gestion des images */
   getAllImages(): Observable<Picture[]> {
-    return this.http.get<Picture[]>(`${this.adminUrl}images`);
+    this.progressService.show();
+    return this.http.get<Picture[]>(`${this.adminUrl}images`).pipe(
+          finalize(() => {
+            this.progressService.hide();
+          })
+        );
   }
   deleteImage(imageId: number): Observable<string> {
-    return this.http.delete(`${this.adminUrl}images/${imageId}`, { responseType: 'text' });
+    this.progressService.show();
+    return this.http.delete(`${this.adminUrl}images/${imageId}`, { responseType: 'text' }).pipe(
+          finalize(() => {
+            this.progressService.hide();
+          })
+        );
   }
 
   /**Gestion des Vidéos */
   getAllVideos(): Observable<Video[]> {
-    return this.http.get<Video[]>(`${this.adminUrl}videos`);
+    this.progressService.show();
+    return this.http.get<Video[]>(`${this.adminUrl}videos`).pipe(
+          finalize(() => {
+            this.progressService.hide();
+          })
+        );
   }
   deleteVideo(videoId: number): Observable<string> {
-    return this.http.delete(`${this.adminUrl}videos/${videoId}`, { responseType: 'text' });
+    this.progressService.show();
+    return this.http.delete(`${this.adminUrl}videos/${videoId}`, { responseType: 'text' }).pipe(
+          finalize(() => {
+            this.progressService.hide();
+          })
+        );
   }
 
   

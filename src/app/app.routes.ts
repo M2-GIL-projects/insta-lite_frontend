@@ -50,6 +50,5 @@ export const routes: Routes = [
     path: 'admin',
     component: AdminDashboardComponent,
     canActivate: [AuthGuard, AdminGuard],
-  },
-  // Ajoutez un AdminGuard spécifique pour la route admin si nécessaire
+  }
 ];

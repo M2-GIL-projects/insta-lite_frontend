@@ -69,9 +69,9 @@ export class ProfilEditComponent implements OnInit {
           email: user.email,
           bio: user.bio,
           phone: user.phone,
-          photo: user.profileImg
+          photo: user.photo
         });
-        this.currentProfileImageUrl = user.profileImg || undefined;
+        this.currentProfileImageUrl = user.photo || undefined;
       },
       (error) => {
         console.error('Erreur lors du chargement des données utilisateur:', error);

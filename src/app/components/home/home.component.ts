@@ -11,6 +11,7 @@ import { UserService } from '../../services/user.service';
 import { Router, RouterLink } from '@angular/router';
 import { ProfilModalComponent } from '../profile/profil-modal/profil-modal.component';
 import { AlertService } from '../../services/alert.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -23,6 +24,7 @@ export class HomeComponent implements OnInit {
   posts: Post[] = [];
   suggestions: User[] = [];
   currentUser: User | null = null;
+
   constructor(
     private postService: PostService,
     private userService: UserService,
@@ -55,28 +57,90 @@ export class HomeComponent implements OnInit {
   }
 
   loadPosts(): void {
-
-    if(this.currentUser?.role == "USER" || !this.currentUser){
-      this.postService.getPublicPosts().subscribe(
-        (posts) => {
-          this.posts = posts;
-        },
-        (error) => {
-          console.error('Erreur lors du chargement des posts', error);
-        }
-      );
-    }else if(this.currentUser?.role == "PRIVILEGED_USER" || this.currentUser?.role == "ADMIN"){
-      this.postService.getPrivatePosts().subscribe(
-      (posts) => {
-        this.posts = posts;
+    this.authService.isLoggedIn().subscribe(loggedIn => {
+      if (loggedIn) {
+        this.userService.getMe().subscribe(
+          user => {
+            this.currentUser = user;
+            if (this.currentUser.role === "PRIVILEGED_USER" || this.currentUser.role === "ADMIN") {
+              // Charger à la fois les posts publics et privés
+              this.loadAllPosts();
+            } else {
+              // Pour les utilisateurs avec le rôle USER, charger uniquement les posts publics
+              this.loadPublicPosts();
+            }
+          },
+          error => {
+            console.error('Erreur lors de la récupération de l\'utilisateur courant', error);
+            this.loadPublicPosts(); // En cas d'erreur, charger les posts publics par défaut
+          }
+        );
+      } else {
+        // Pour les utilisateurs non connectés, charger uniquement les posts publics
+        this.loadPublicPosts();
+      }
+    });
+  }
+  
+  private loadAllPosts(): void {
+    forkJoin({
+      privatePosts: this.postService.getPrivatePosts(),
+      publicPosts: this.postService.getPublicPosts()
+    }).subscribe(
+      ({ privatePosts, publicPosts }) => {
+        // Créer un Set pour stocker les IDs uniques des posts
+        const uniquePostIds = new Set();
+        // Utiliser un Map pour stocker les posts uniques
+        const uniquePosts = new Map();
+  
+        // Ajouter d'abord les posts privés
+        privatePosts.forEach(post => {
+          if (!uniquePostIds.has(post.id)) {
+            uniquePostIds.add(post.id);
+            uniquePosts.set(post.id, post);
+          }
+        });
+  
+        // Ajouter ensuite les posts publics s'ils ne sont pas déjà présents
+        publicPosts.forEach(post => {
+          if (!uniquePostIds.has(post.id)) {
+            uniquePostIds.add(post.id);
+            uniquePosts.set(post.id, post);
+          }
+        });
+  
+        // Convertir le Map en array
+        this.posts = Array.from(uniquePosts.values());
+        this.sortPosts();
       },
-      (error) => {
+      error => {
         console.error('Erreur lors du chargement des posts', error);
       }
     );
-    }
   }
-
+  
+  
+  private loadPublicPosts(): void {
+    this.postService.getPublicPosts().subscribe(
+      posts => {
+        this.posts = posts;
+        this.sortPosts();
+      },
+      error => {
+        console.error('Erreur lors du chargement des posts publics', error);
+      }
+    );
+  }
+  
+  private sortPosts(): void {
+    this.posts.sort((a, b) => {
+      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return dateB - dateA;
+    });
+  }
+  
+  
   voirPost(postId: number | undefined): void {
     if (postId !== undefined) {
   this.router.navigate(['/post-detail', postId]); 

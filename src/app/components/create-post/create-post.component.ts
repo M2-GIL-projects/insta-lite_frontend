@@ -20,6 +20,7 @@ export class CreatePostComponent implements OnInit {
   selectedFiles: File[] = [];
   previewUrls: string[] = [];
   createdPostId: number | null = null;
+  createdPostImageId: number | null = null;
   isPrivate : boolean = false;
   @ViewChild('mediaModal') mediaModal: any;
   isEditMode: boolean = false; 
@@ -27,6 +28,8 @@ export class CreatePostComponent implements OnInit {
   remainingChars: number = 255;
   oldImageUrl: string | null = null;
   oldVideoUrl: string | null = null;
+  oldImageId: number | null = null;
+  oldVideoId: number | null = null;
 
   constructor(
     private fb: FormBuilder, 
@@ -65,6 +68,8 @@ export class CreatePostComponent implements OnInit {
         });
         this.oldImageUrl = post.pictures && post.pictures.length > 0 ? this.getImageUrl(post.pictures[0].url) : null;
         this.oldVideoUrl = post.videos && post.videos.length > 0 ? this.getImageUrl(post.videos[0].url) : null;
+        this.oldImageId = post.pictures && post.pictures.length > 0 ? post.pictures[0].id : null;
+        this.oldVideoId = post.videos && post.videos.length > 0 ? post.videos[0].id : null;
       },
       (error) => {
         console.log('Erreur lors de la récupération des données', error);
@@ -156,22 +161,38 @@ export class CreatePostComponent implements OnInit {
       this.selectedFiles.forEach(file => {
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('isPrivate', isPrivate ? 'true' : 'false');
+        formData.append('private', isPrivate ? 'true' : 'false');
   
         if (file.type.startsWith('image/')) {
           if(!this.isEditMode){
             this.postService.addPictureToPost(this.createdPostId as number, isPrivate, formData).subscribe(
             response => {
               this.alertService.showSuccess("Ajout Image", "Image ajoutée avec succès!");
+              this.modalService.dismissAll();
+              this.router.navigate(['/profile']);
             },
             error => {
               console.error('Erreur lors de l\'ajout de l\'image', error);
             }
           ); 
-          }else{
-            this.postService.updatePictureToPost(this.createdPostId as number, isPrivate, formData).subscribe(
+          //si on est en mode edition est que le post avait été crée sans image
+          }else if(this.isEditMode && !this.oldImageId){
+            this.postService.addPictureToPost(this.createdPostId as number, isPrivate, formData).subscribe(
               response => {
+                this.alertService.showSuccess("Ajout Image", "Image ajoutée avec succès!");
+                this.modalService.dismissAll();
+                this.router.navigate(['/profile']);
+              },
+              error => {
+                console.error('Erreur lors de l\'ajout de l\'image', error);
+              }
+            ); 
+          }else{
+            this.postService.updatePictureToPost(this.createdPostId as number, formData).subscribe(
+              (response) => {
                 this.alertService.showSuccess("Mise à jour image", "Image mise à jour !");
+                this.modalService.dismissAll();
+                this.router.navigate(['/profile']);
               },
               error => {
                 console.error('Erreur lors de la mise à jour de l\'image', error);
@@ -185,6 +206,20 @@ export class CreatePostComponent implements OnInit {
             this.postService.addVideoToPost(this.createdPostId as number,isPrivate, formData).subscribe(
               response => {
                 this.alertService.showSuccess("Ajout vidéo", "La vidéo a été ajoutée!");
+                this.modalService.dismissAll();
+                this.router.navigate(['/profile']);
+              },
+              error => {
+                console.error('Erreur lors de l\'ajout de la vidéo', error);
+              }
+            );
+            //si on est en mode edition est que le post avait été crée sans vidéo
+          }else if(this.isEditMode && !this.oldVideoId){
+            this.postService.addVideoToPost(this.createdPostId as number,isPrivate, formData).subscribe(
+              response => {
+                this.alertService.showSuccess("Ajout vidéo", "La vidéo a été ajoutée!");
+                this.modalService.dismissAll();
+                this.router.navigate(['/profile']);
               },
               error => {
                 console.error('Erreur lors de l\'ajout de la vidéo', error);

@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, Observable, of, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap, finalize } from 'rxjs';
+import { ProgressService } from './progress.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class AuthService {
   isLoggedIn$ = this.isLoggedInSubject.asObservable();
   userRole$ = this.userRoleSubject.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private progressService: ProgressService) {
     this.checkInitialLoginState();
   }
 
@@ -26,25 +27,33 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<any> {
+    this.progressService.show();
     return this.http.post(`${this.UserUrl}/login`, { email, password }).pipe(
       tap((response: any) => {
         if (response.token) {
           localStorage.setItem('token', response.token);
           localStorage.setItem('role', response.role);
           this.isLoggedInSubject.next(true);
-          //this.userRoleSubject.next(response.role);
+          this.userRoleSubject.next(response.role);
         }
+      }),
+      finalize(() => {
+        this.progressService.hide();
       })
     );
   }
 
   logout(): Observable<any> {
+    this.progressService.show();
     return this.http.post(`${this.UserUrl}/logout`, {}, { responseType: 'text' }).pipe(
       tap(() => {
         localStorage.removeItem('token');
         localStorage.removeItem('role');
         this.isLoggedInSubject.next(false);
         this.userRoleSubject.next(null);
+      }),
+      finalize(() => {
+        this.progressService.hide();
       })
     );
   }
@@ -65,5 +74,4 @@ export class AuthService {
     const role = this.userRoleSubject.value;
     return role === 'ADMIN' || role === 'PRIVILEGED_USER';
   }
-
 }

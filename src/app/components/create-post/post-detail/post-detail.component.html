@@ -2,7 +2,7 @@
     <div class="card shadow-sm">
       <div class="card-header d-flex justify-content-between align-items-center bg-light">
         <div class="user-info d-flex align-items-center">
-          <img [src]="getImageUrl(post.user.profileImg)" 
+          <img [src]="getImageUrl(post.user.photo)" 
                class="rounded-circle me-2 border" 
                width="50" 
                height="50" 
@@ -36,7 +36,7 @@
           {{ post.likes?.length || 0 }}
         </button>
         <button class="btn btn-outline-secondary">
-          <i class="fas fa-comment"></i> Commenter
+          <i class="fas fa-comment"></i> {{ post.comments?.length || 0 }}
         </button>
       </div>
     </div>
@@ -47,7 +47,7 @@
       </h5>
       <div *ngFor="let comment of post?.comments" class="comment mb-3 border-bottom pb-2">
         <div class="d-flex">
-          <img [src]="getImageUrl(comment?.user?.profileImg)" 
+          <img [src]="getImageUrl(comment?.user?.photo)" 
                class="rounded-circle me-2 border" 
                width="40" 
                height="40" 
